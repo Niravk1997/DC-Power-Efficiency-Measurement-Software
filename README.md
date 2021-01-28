@@ -1,7 +1,7 @@
 # DC Power Efficiency Measurement Software
 
  A fully automated software that measures power efficiency among other things for various input voltages and output load currents for your circuit using a programmable power supply and a dc electronic load. This software supports Window 10, 8, 8.1, and 7.
-
+#### [Download](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/releases)
 **Features:**
 
 - Fully automated, the user only need to set the input parameters and click start, the software will do the rest.
@@ -25,7 +25,8 @@
 
 ![Test Fixture](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Test_Fixture.PNG)
 
-The basic concept is that you connect your power supply to the input terminals of your device that you want to test. And connect your dc electronic load to the output terminals of your device. The power supply will provide power to your device and the dc electronic load will consume power from your device. The power supply will measure voltage and current on the input side of your device while the dc electronic load will measure voltage and current on the output side. **Please refer to the user manual for more info: ![User manual](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/User%20Manual.pdf)**
+The basic concept is that you connect your power supply to the input terminals of your device that you want to test. And connect your dc electronic load to the output terminals of your device. The power supply will provide power to your device and the dc electronic load will consume power from your device. The power supply will measure voltage and current on the input side of your device while the dc electronic load will measure voltage and current on the output side. **Please refer to the user manual for more info: 
+[User manual](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/User%20Manual.pdf)**
 
 ![Main Window](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_1.PNG)
 

@@ -1622,6 +1622,10 @@ namespace Power_Efficiency_663XB
             total_SinkOutput_Current_Values = 0;
             total_Measurements = 0;
             total_Tests = 0;
+            if (SingleSweep == true) 
+            {
+                stopVoltage = startVoltage + 0.1;
+            }
             for (double i = startVoltage; i <= stopVoltage; i = Math.Round((i + incrementVoltage), VoltageResolution))
             {
                 //Set Source Voltage

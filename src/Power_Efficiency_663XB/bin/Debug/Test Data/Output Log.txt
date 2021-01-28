@@ -1,0 +1,258 @@
+[2021-01-28 2:34:10 PM][Source] Model: 6632B  Max Voltage: 20V  Max Current: 5A
+[2021-01-28 2:34:10 PM][Sink] Model: 6632B  Max Voltage: 20V  Max Current: 5A
+[2021-01-28 2:34:10 PM]Test Data will be saved here: C:\Users\nirav\Documents\GitHub\DC-Power-Efficiency-Measurement-Software\src\Power_Efficiency_663XB\bin\Debug\Test Data
+[2021-01-28 2:34:10 PM]You may open graphs by going to the Graphs menu, then Show Graphs and select the graphs you want.
+[2021-01-28 2:34:10 PM]You may open the measurement table by going to Table menu, then click show table.
+[2021-01-28 2:34:10 PM]For accurate results, your power supply must operate in constant voltage (CV) mode.
+[2021-01-28 2:34:10 PM]For accurate results, your dc electronic load must operate in constant current (CC) mode.
+[2021-01-28 2:34:30 PM][Source] Current Limit must be a positive number.
+[2021-01-28 2:34:34 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:34:34 PM][Source] Set Voltage: 7V
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.2A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.3A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.4A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.5A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.6A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.7A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.8A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 0.9A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.2A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.3A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.4A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.5A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.6A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.7A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.8A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 1.9A
+[2021-01-28 2:34:34 PM][Sink] Set Current: 2A
+[2021-01-28 2:34:34 PM]Tests Completed: 1
+[2021-01-28 2:34:34 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:34:34 PM]Total Sink Output Current Values: 20
+[2021-01-28 2:34:34 PM]Total Measurements: 1680
+[2021-01-28 2:34:34 PM]Total Measurement Samples Taken: 420
+[2021-01-28 2:34:34 PM]Total Tests: 1
+[2021-01-28 2:34:34 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:34:36 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:34:36 PM][Source] Set Voltage: 7V
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.2A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.3A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.4A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.5A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.6A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.7A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.8A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 0.9A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.2A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.3A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.4A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.5A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.6A
+[2021-01-28 2:34:36 PM][Sink] Set Current: 1.7A
+[2021-01-28 2:34:37 PM][Sink] Set Current: 1.8A
+[2021-01-28 2:34:37 PM][Sink] Set Current: 1.9A
+[2021-01-28 2:34:37 PM][Sink] Set Current: 2A
+[2021-01-28 2:34:37 PM]Tests Completed: 1
+[2021-01-28 2:34:37 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:34:37 PM]Total Sink Output Current Values: 20
+[2021-01-28 2:34:37 PM]Total Measurements: 1680
+[2021-01-28 2:34:37 PM]Total Measurement Samples Taken: 420
+[2021-01-28 2:34:37 PM]Total Tests: 1
+[2021-01-28 2:34:37 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:34:38 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:34:38 PM][Source] Set Voltage: 7V
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.2A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.3A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.4A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.5A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.6A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.7A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.8A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 0.9A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.2A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.3A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.4A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.5A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.6A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.7A
+[2021-01-28 2:34:38 PM][Sink] Set Current: 1.8A
+[2021-01-28 2:34:39 PM][Sink] Set Current: 1.9A
+[2021-01-28 2:34:39 PM][Sink] Set Current: 2A
+[2021-01-28 2:34:39 PM]Tests Completed: 1
+[2021-01-28 2:34:39 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:34:39 PM]Total Sink Output Current Values: 20
+[2021-01-28 2:34:39 PM]Total Measurements: 1680
+[2021-01-28 2:34:39 PM]Total Measurement Samples Taken: 420
+[2021-01-28 2:34:39 PM]Total Tests: 1
+[2021-01-28 2:34:39 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:34:40 PM]All input fields reset to default state.
+[2021-01-28 2:34:41 PM][Source] Start Voltage must be a positive number.
+[2021-01-28 2:34:49 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:34:49 PM][Source] Set Voltage: 7V
+[2021-01-28 2:34:49 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:34:49 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:34:49 PM]Tests Completed: 1
+[2021-01-28 2:34:49 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:34:49 PM]Total Sink Output Current Values: 2
+[2021-01-28 2:34:49 PM]Total Measurements: 168
+[2021-01-28 2:34:49 PM]Total Measurement Samples Taken: 42
+[2021-01-28 2:34:49 PM]Total Tests: 1
+[2021-01-28 2:34:49 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:34:52 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:34:52 PM][Source] Set Voltage: 7V
+[2021-01-28 2:34:52 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:34:52 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:34:53 PM]Tests Completed: 1
+[2021-01-28 2:34:53 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:34:53 PM]Total Sink Output Current Values: 2
+[2021-01-28 2:34:53 PM]Total Measurements: 168
+[2021-01-28 2:34:53 PM]Total Measurement Samples Taken: 42
+[2021-01-28 2:34:53 PM]Total Tests: 1
+[2021-01-28 2:34:53 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:34:55 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:34:55 PM][Source] Set Voltage: 7V
+[2021-01-28 2:34:55 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:34:55 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:34:55 PM]Tests Completed: 1
+[2021-01-28 2:34:55 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:34:55 PM]Total Sink Output Current Values: 2
+[2021-01-28 2:34:55 PM]Total Measurements: 168
+[2021-01-28 2:34:55 PM]Total Measurement Samples Taken: 42
+[2021-01-28 2:34:55 PM]Total Tests: 1
+[2021-01-28 2:34:55 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:04 PM][Source] Stop Voltage must be a positive number.
+[2021-01-28 2:35:05 PM][Source] Stop Voltage must be a positive number.
+[2021-01-28 2:35:09 PM][Source] Stop Voltage must be greater than Start Voltage
+[2021-01-28 2:35:13 PM][Source] Increment Voltage must be a positive number.
+[2021-01-28 2:35:18 PM][Source] Increment Voltage must be less than or equal to 1V
+[2021-01-28 2:35:18 PM][Source] Start and Stop Voltage values may be too close to each other.
+[2021-01-28 2:35:21 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:21 PM][Source] Set Voltage: 7V
+[2021-01-28 2:35:21 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:21 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:35:21 PM]Tests Completed: 1
+[2021-01-28 2:35:21 PM][Source] Set Voltage: 8V
+[2021-01-28 2:35:21 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:21 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:35:21 PM]Tests Completed: 2
+[2021-01-28 2:35:21 PM]Total Source Input Voltage Values: 2
+[2021-01-28 2:35:21 PM]Total Sink Output Current Values: 4
+[2021-01-28 2:35:21 PM]Total Measurements: 336
+[2021-01-28 2:35:21 PM]Total Measurement Samples Taken: 84
+[2021-01-28 2:35:21 PM]Total Tests: 2
+[2021-01-28 2:35:21 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:23 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:23 PM][Source] Set Voltage: 7V
+[2021-01-28 2:35:23 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:23 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:35:23 PM]Tests Completed: 1
+[2021-01-28 2:35:23 PM][Source] Set Voltage: 8V
+[2021-01-28 2:35:23 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:23 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:35:23 PM]Tests Completed: 2
+[2021-01-28 2:35:23 PM]Total Source Input Voltage Values: 2
+[2021-01-28 2:35:23 PM]Total Sink Output Current Values: 4
+[2021-01-28 2:35:23 PM]Total Measurements: 336
+[2021-01-28 2:35:23 PM]Total Measurement Samples Taken: 84
+[2021-01-28 2:35:23 PM]Total Tests: 2
+[2021-01-28 2:35:23 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:25 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:25 PM][Source] Set Voltage: 7V
+[2021-01-28 2:35:25 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:25 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:35:25 PM]Tests Completed: 1
+[2021-01-28 2:35:25 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:35:25 PM]Total Sink Output Current Values: 2
+[2021-01-28 2:35:25 PM]Total Measurements: 168
+[2021-01-28 2:35:25 PM]Total Measurement Samples Taken: 42
+[2021-01-28 2:35:25 PM]Total Tests: 1
+[2021-01-28 2:35:25 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:28 PM]All input fields reset to default state.
+[2021-01-28 2:35:29 PM][Source] Start Voltage must be a positive number.
+[2021-01-28 2:35:29 PM][Source] Start Voltage must be a positive number.
+[2021-01-28 2:35:30 PM][Source] Start Voltage must be a positive number.
+[2021-01-28 2:35:43 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:43 PM][Source] Set Voltage: 6V
+[2021-01-28 2:35:43 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:43 PM][Sink] Set Current: 0.2A
+[2021-01-28 2:35:43 PM][Sink] Set Current: 0.3A
+[2021-01-28 2:35:43 PM][Sink] Set Current: 0.4A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 0.5A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 0.6A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 0.7A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 0.8A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 0.9A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.1A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.2A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.3A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.4A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.5A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.6A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.7A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.8A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 1.9A
+[2021-01-28 2:35:44 PM][Sink] Set Current: 2A
+[2021-01-28 2:35:44 PM]Tests Completed: 1
+[2021-01-28 2:35:44 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:35:44 PM]Total Sink Output Current Values: 20
+[2021-01-28 2:35:44 PM]Total Measurements: 480
+[2021-01-28 2:35:44 PM]Total Measurement Samples Taken: 120
+[2021-01-28 2:35:45 PM]Total Tests: 1
+[2021-01-28 2:35:45 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:50 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:50 PM][Source] Set Voltage: 6V
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.2A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.3A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.4A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.5A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.6A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.7A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.8A
+[2021-01-28 2:35:50 PM][Sink] Set Current: 0.9A
+[2021-01-28 2:35:51 PM][Sink] Set Current: 1A
+[2021-01-28 2:35:51 PM]Tests Completed: 1
+[2021-01-28 2:35:51 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:35:51 PM]Total Sink Output Current Values: 10
+[2021-01-28 2:35:51 PM]Total Measurements: 240
+[2021-01-28 2:35:51 PM]Total Measurement Samples Taken: 60
+[2021-01-28 2:35:51 PM]Total Tests: 1
+[2021-01-28 2:35:51 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:54 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:54 PM][Source] Set Voltage: 6V
+[2021-01-28 2:35:54 PM][Sink] Set Current: 0.1A
+[2021-01-28 2:35:54 PM][Sink] Set Current: 0.6A
+[2021-01-28 2:35:54 PM]Tests Completed: 1
+[2021-01-28 2:35:54 PM]Total Source Input Voltage Values: 1
+[2021-01-28 2:35:54 PM]Total Sink Output Current Values: 2
+[2021-01-28 2:35:54 PM]Total Measurements: 48
+[2021-01-28 2:35:54 PM]Total Measurement Samples Taken: 12
+[2021-01-28 2:35:54 PM]Total Tests: 1
+[2021-01-28 2:35:54 PM]Verification Test Successful. Press Start when you are ready.
+[2021-01-28 2:35:57 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:35:57 PM]Verification Test Successful. Starting Test.
+[2021-01-28 2:35:57 PM][Source] Set Input Voltage: 6V
+[2021-01-28 2:35:57 PM][Sink] Set Output Load Current: 0.1A
+[2021-01-28 2:35:59 PM] Input Voltage: 6.001V, Input Current: 0.0874A, Output Voltage: 5.068V, Output Load Current: 0.0996A, Input Power: 0.524W, Output Power: 0.505W, Power Efficiency: 96.241%, Power Loss: 3.759%, Input Resistance: 68.661Ω, Output Resistance: 50.884Ω, Circuit Resistance: 17.777Ω
+[2021-01-28 2:35:59 PM][Sink] Set Output Load Current: 0.6A
+[2021-01-28 2:36:00 PM] Input Voltage: 6.001V, Input Current: 0.5335A, Output Voltage: 5.066V, Output Load Current: 0.6A, Input Power: 3.202W, Output Power: 3.04W, Power Efficiency: 94.942%, Power Loss: 5.058%, Input Resistance: 11.248Ω, Output Resistance: 8.443Ω, Circuit Resistance: 2.805Ω
+[2021-01-28 2:36:00 PM]Saved Measurements to File: C:\Users\nirav\Documents\GitHub\DC-Power-Efficiency-Measurement-Software\src\Power_Efficiency_663XB\bin\Debug\Test Data\2021-01-28 2.35.57 PM-\[Source] Input Voltage 6V.txt
+[2021-01-28 2:36:00 PM]Saved Final Results to File: C:\Users\nirav\Documents\GitHub\DC-Power-Efficiency-Measurement-Software\src\Power_Efficiency_663XB\bin\Debug\Test Data\2021-01-28 2.35.57 PM-\[Final Results][Source] Input Voltage 6V.txt
+[2021-01-28 2:36:04 PM]All Input fields are valid. Starting Verification Testing.
+[2021-01-28 2:36:05 PM]Verification Test Successful. Starting Test.
+[2021-01-28 2:36:05 PM][Source] Set Input Voltage: 6V
+[2021-01-28 2:36:05 PM][Sink] Set Output Load Current: 0.1A
+[2021-01-28 2:36:06 PM] Input Voltage: 6.001V, Input Current: 0.0875A, Output Voltage: 5.068V, Output Load Current: 0.0996A, Input Power: 0.525W, Output Power: 0.505W, Power Efficiency: 96.131%, Power Loss: 3.869%, Input Resistance: 68.583Ω, Output Resistance: 50.884Ω, Circuit Resistance: 17.699Ω
+[2021-01-28 2:36:06 PM][Sink] Set Output Load Current: 0.6A
+[2021-01-28 2:36:08 PM] Input Voltage: 6.001V, Input Current: 0.5333A, Output Voltage: 5.066V, Output Load Current: 0.6002A, Input Power: 3.2W, Output Power: 3.041W, Power Efficiency: 95.009%, Power Loss: 4.991%, Input Resistance: 11.253Ω, Output Resistance: 8.441Ω, Circuit Resistance: 2.812Ω
+[2021-01-28 2:36:08 PM]Saved Measurements to File: C:\Users\nirav\Documents\GitHub\DC-Power-Efficiency-Measurement-Software\src\Power_Efficiency_663XB\bin\Debug\Test Data\2021-01-28 2.36.05 PM-\[Source] Input Voltage 6V.txt
+[2021-01-28 2:36:08 PM]Saved Final Results to File: C:\Users\nirav\Documents\GitHub\DC-Power-Efficiency-Measurement-Software\src\Power_Efficiency_663XB\bin\Debug\Test Data\2021-01-28 2.36.05 PM-\[Final Results][Source] Input Voltage 6V.txt

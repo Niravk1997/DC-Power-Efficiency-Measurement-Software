@@ -8,6 +8,7 @@
 - Automatically save all the measured and calculated data to text files.
 - Graphs and the measurement table are automatically updated as the software finishes each test.
 - Graphs are highly interactive and customizable. Add vertical and or horizontal markers as well as set color themes. Use mouse tracker to easily see x and y values on the graph.
+- Users may open up to 9 live updating graphs to display their data on.
 - Save graph as an image, and save table's content manually as .CSV or text file. You may also edit the table's content or delete them.
 - Supports most HP/Agilent/Keysight power supplies that have a serial port.
 - Supports SCPI commands by default for controlling power supplies.
@@ -22,31 +23,31 @@
 
 ###### Currently tested dc electronic loads or 2/4 quadrant power supplies: HP/Agilent/Keysight 6631B, 6632B, 6633B, 6634B
 
-![](Pictures\Test_Fixture.PNG)
+![Test Fixture](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Test_Fixture.PNG)
 
 The basic concept is that you connect your power supply to the input terminals of your device that you want to test. And connect your dc electronic load to the output terminals of your device. The power supply will provide power to your device and the dc electronic load will consume power from your device. The power supply will measure voltage and current on the input side of your device while the dc electronic load will measure voltage and current on the output side. **Please refer to the user manual for more info.**
 
-![](Pictures\Picture_1.PNG)
+![Main Window](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_1.PNG)
 
-![](Pictures\Picture_3.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_3.PNG)
 
-![](Pictures\Picture_2.PNG)
+![Table](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_2.PNG)
 
-![](Pictures\COM Port Window.PNG)
+![COM select window](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/COM%20Port%20Window.PNG)
 
-![](Pictures\Picture_4.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_4.PNG)
 
-![](Pictures\Picture_5.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_5.PNG)
 
-![](Pictures\Picture_6.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_6.PNG)
 
-![](Pictures\Picture_7.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_7.PNG)
 
-![](Pictures\Picture_8.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_8.PNG)
 
-![](Pictures\Picture_9.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_9.PNG)
 
-![](Pictures\Picture_10.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_10.PNG)
 
-![](Pictures\Picture_11.PNG)
+![Graph](https://github.com/Niravk1997/DC-Power-Efficiency-Measurement-Software/blob/main/Pictures/Picture_11.PNG)
 

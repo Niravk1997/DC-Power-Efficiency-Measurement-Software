@@ -1,0 +1,219 @@
+﻿<Window x:Class="Power_Efficiency_663XB.Graph_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Power_Efficiency_663XB"
+        xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
+        mc:Ignorable="d"
+        Title="Graph_Window" Height="500" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.3*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Column="0" Grid.Row="0" FontSize="14" Height="20">
+            <MenuItem x:Name="File" Header="File" IsCheckable="False" IsChecked="False">
+                <MenuItem.ToolTip>
+                    <ToolTip>Exit the Graph Window.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Graph_save" Header="Save Graph Picture" IsCheckable="False" IsChecked="False" Click="Graph_save_Click"/>
+                <MenuItem x:Name="Exit" Header="Exit" IsCheckable="False" IsChecked="False" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="Graph_color" Header="Graph Colours" IsCheckable="False" IsChecked="False">
+                <MenuItem.ToolTip>
+                    <ToolTip>Change the colours of Voltage curve, and plot background.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Plotfg" Header="Plot Background" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="fgGreen_Text" Header="_Green" IsCheckable="True" IsChecked="False" Click="fgGreen_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFAAFFB2" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgBlue_Text" Header="_Blue" IsCheckable="True" IsChecked="False" Click="fgBlue_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFA1E7FF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgRed_Text" Header="_Red" IsCheckable="True" IsChecked="False" Click="fgRed_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFF8989" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgYellow_Text" Header="_Yellow" IsCheckable="True" IsChecked="False" Click="fgYellow_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFFF93" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgOrange_Text" Header="_Orange" IsCheckable="True" IsChecked="False" Click="fgOrange_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFCB8C" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgBlack_Text" Header="_Black" IsCheckable="True" IsChecked="False" Click="fgBlack_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF6E6E6E" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgPink_Text" Header="_Pink" IsCheckable="True" IsChecked="False" Click="fgPink_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFF9ED2" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgViolet_Text" Header="_Violet" IsCheckable="True" IsChecked="False" Click="fgViolet_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFE6ACFF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="fgWhite_Text" Header="_White" IsCheckable="True" IsChecked="True" Click="fgWhite_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem x:Name="Plotbg" Header="Plot Data Background" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="bgGreen_Text" Header="_Green" IsCheckable="True" IsChecked="False" Click="bgGreen_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFAAFFB2" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgBlue_Text" Header="_Blue" IsCheckable="True" IsChecked="False" Click="bgBlue_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFA1E7FF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgRed_Text" Header="_Red" IsCheckable="True" IsChecked="False" Click="bgRed_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFF8989" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgYellow_Text" Header="_Yellow" IsCheckable="True" IsChecked="False" Click="bgYellow_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFFF93" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgOrange_Text" Header="_Orange" IsCheckable="True" IsChecked="False" Click="bgOrange_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFCB8C" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgBlack_Text" Header="_Black" IsCheckable="True" IsChecked="False" Click="bgBlack_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF6E6E6E" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgPink_Text" Header="_Pink" IsCheckable="True" IsChecked="False" Click="bgPink_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFF9ED2" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgViolet_Text" Header="_Violet" IsCheckable="True" IsChecked="False" Click="bgViolet_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFE6ACFF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="bgWhite_Text" Header="_White" IsCheckable="True" IsChecked="True" Click="bgWhite_Text_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem x:Name="Plot_Themes" Header="Graph Themes" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="Default_Theme" Header="Default Theme" IsCheckable="True" IsChecked="True" Click="Default_Theme_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Black_Theme" Header="Black Theme" IsCheckable="True" IsChecked="False" Click="Black_Theme_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Black" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Blue_Theme" Header="Blue Theme" IsCheckable="True" IsChecked="False" Click="Blue_Theme_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#0b3049" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Gray_Theme" Header="Gray Theme" IsCheckable="True" IsChecked="False" Click="Gray_Theme_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#3a4149" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="GrayBlack_Theme" Header="Gray Black Theme" IsCheckable="True" IsChecked="False" Click="GrayBlack_Theme_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#262626" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Graph Settings" IsCheckable="False" IsChecked="False">
+                <MenuItem.ToolTip>
+                    <ToolTip>Enable Auto Scaling, Enable/Disable Markers and Mouse Tracker Info</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Mouse_Tracker" Header="Mouse Tracker" IsCheckable="True" IsChecked="False" Click="Mouse_Tracker_Click"/>
+                <MenuItem Header="Plots &amp; Markers" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="Clear_Plots" Header="Clear All Plots &amp; Markers" IsCheckable="False" IsChecked="False" Click="Clear_Plots_Click"/>
+                </MenuItem>
+                <MenuItem Header="Graph Legend">
+                    <MenuItem x:Name="Show_legend" Header="Show Legend" IsCheckable="True" IsChecked="True" Click="Show_legend_Click"/>
+                    <MenuItem x:Name="Position_legend" Header="Legend Position" IsCheckable="False" IsChecked="False">
+                        <MenuItem x:Name="Legend_TopLeft" Header="Top Left" IsCheckable="True" IsChecked="False" Click="Legend_TopLeft_Click"/>
+                        <MenuItem x:Name="Legend_TopRight" Header="Top Right" IsCheckable="True" IsChecked="False" Click="Legend_TopRight_Click"/>
+                        <MenuItem x:Name="Legend_BottomLeft" Header="Bottom Left" IsCheckable="True" IsChecked="False" Click="Legend_BottomLeft_Click"/>
+                        <MenuItem x:Name="Legend_BottomRight" Header="Bottom Right" IsCheckable="True" IsChecked="True" Click="Legend_BottomRight_Click"/>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Auto Axis" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="Force_AutoAxis" Header="Force Auto Axis" IsCheckable="False" IsChecked="False" Click="Force_AutoAxis_Click"/>
+                    <MenuItem x:Name="Auto_Axix_Enable" Header="Enable" IsCheckable="True" IsChecked="True" Click="Auto_Axix_Enable_Click"/>
+                    <MenuItem x:Name="Auto_Axis_Disable" Header="Disable" IsCheckable="True" IsChecked="False" Click="Auto_Axis_Disable_Click"/>
+                </MenuItem>
+                <MenuItem Header="Horizontal Markers" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="Drag_H_Marker" Header="Add Draggable Marker" IsCheckable="False" IsChecked="False" Click="Drag_H_Marker_Click"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="H_Marker_Name" Text="" MinWidth="50" Margin="0,0,5,0"/>
+                        <Button x:Name="Add_H_Marker" Content="Add Marker" Width="85" Click="Add_H_Marker_Click"/>
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Header="Vertical Markers" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="Drag_V_Marker" Header="Add Draggable Marker" IsCheckable="False" IsChecked="False" Click="Drag_V_Marker_Click"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="V_Marker_Name" Text="" MinWidth="50" Margin="0,0,5,0"/>
+                        <Button x:Name="Add_V_Marker" Content="Add Marker" Width="85" Click="Add_V_Marker_Click"/>
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem x:Name="Diagonal_Line" Header="Add Diagonal Line" IsCheckable="False" IsChecked="False" Click="Diagonal_Line_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="Output_Log_Menu" Header="Output Log">
+                <MenuItem.ToolTip>
+                    <ToolTip>Clear and/or Save Output Log</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Save_Log" Header="Save Output Log" IsCheckable="False" IsChecked="False" Click="Save_Log_Click"/>
+                <MenuItem x:Name="Clear_Log" Header="Clear Output Log" IsCheckable="False" IsChecked="False" Click="Clear_Log_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="About" Header="About">
+                <MenuItem.ToolTip>
+                    <ToolTip>Clear and/or Save Output Log</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Help" Header="Help" IsCheckable="False" IsChecked="False" Click="Help_Click"/>
+                <MenuItem x:Name="Credits" Header="Credits" IsCheckable="False" IsChecked="False" Click="Credits_Click"/>
+            </MenuItem>
+        </Menu>
+        <ScottPlot:WpfPlot Name="Graph" Grid.Column="0" Grid.Row="1" MouseMove="Graph_MouseMove"/>
+        <GroupBox Grid.Column="0" Grid.Row="2" Margin="5,0,5,3">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Margin="0,0,0,0">Output Log:</TextBlock>
+                    <TextBlock x:Name="Graph_Log_Name" FontWeight="Bold" Margin="5,0,0,0" Text=""/>
+                </StackPanel>
+            </GroupBox.Header>
+            <ScrollViewer x:Name="Output_Log_Scroll" Margin="0,0,0,0" HorizontalScrollBarVisibility="Auto">
+                <TextBlock x:Name="Output_Log" FontSize="12"/>
+            </ScrollViewer>
+        </GroupBox>
+    </Grid>
+</Window>

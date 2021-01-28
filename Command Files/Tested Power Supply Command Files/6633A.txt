@@ -1,0 +1,9 @@
+VSET
+ISET
+VOUT?
+IOUT?
+OUT 1
+OUT 0
+4
+12
+0

@@ -1,0 +1,60 @@
+replace_me_Set_Voltage_Command_if_not_supported_then_leave_it_blank
+replace_me_Set_Constant_Current_Load_Value_Command
+replace_me_Measure_Voltage_Command
+replace_me_Measure_Current_Command
+replace_me_Output_On_Command
+replace_me_Output_Off_Command
+0
+20
+0
+---------End of Command-----------
+Instructions:
+The order of the commands matter.
+
+Each command must be on a single line.
+
+No Space between commands
+
+Line 1: You need to place a command that sets the voltage on your DC Load, this is a write 
+        only serial command, this command must not send any data to the software. If this is
+	not supported by your DC Load then leave it blank
+
+Line 2: You need to place a command that sets the constant current Load on your DC Load, this is a 
+        write only serial command, this command must not send any data to the software. 
+        You need to make sure your DC Load operates in constant current mode throughout
+        the tests.
+
+Line 3: You need to place a command that reads the voltage from your DC Load, this is 
+        a query (write & read) serial command. It must send measured voltage value to the software.
+
+Line 4: You need to place a command that reads the current from your DC Load, this is a 
+        query (write & read) serial command. It must send measured current value to the software.
+
+Line 5: You need to place a command that sets the DC Load’s Output ON, this is a write 
+        only command, this command must not send any data to the software.
+
+Line 6: You need to place a command that sets the DC Load’s Output OFF, this is a 
+        write only command, this command must not send any data to the software.
+
+Line 7: This must be a positive integer value, this value tells the software what the 
+        serial.readLine() message’s minimum length should be. For Example: ‘5.000E+2’ let us 
+        say this data was received from the DC Load then its length is 8, 
+        then minimum length will be 8 – 1 = 7, the minimum length will be 7. 
+        Another example, If your DC Load sends this ’10.001’ message, then its 
+        length is 6, then minimum length will usually be 6 – 1 = 5. If you have no idea, 
+        then you may set it to 0.
+
+Line 8: This must be a positive integer value, this value tells the software what the 
+        serial.readLine() message’s maximum length should be. For Example: ‘5.000E+2’ 
+        let us say this data was received from the DC Load then its length is 8, 
+        then maximum length will be 8 + 2, its usually best to set this value a bit higher 
+        than what the instrument may send. If you have no idea, then you may set it to 20 or higher.
+
+Line 9: This must be a 1 or 0 depending on whether your DC Load sends data in 
+        scientific notation or not. The following is an example of what a scientific 
+        notation number looks like 10.4245E+10. If your data look likes this ’10.001’ 
+        then set it to 0. If your data looks like this ‘5.00E+1’ then set it to 1.
+	are values recieved in Scientific Notation then = 1
+	are values recieved not in Scientific Noatation then = 0
+
+Line 7, 8, and 9 allows the software to filter out invalid/bad value data that might get recieved.

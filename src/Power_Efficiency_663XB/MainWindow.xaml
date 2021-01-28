@@ -1,0 +1,558 @@
+﻿<Window x:Class="Power_Efficiency_663XB.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Power_Efficiency_663XB"
+        mc:Ignorable="d"
+        Title="DC Power Efficiency Measurement Software (Source: Unknown) (Sink: Unknown)" Height="660" Width="750" Closed="Window_Closed" Loaded="timerStart">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.ColumnSpan="2" Grid.Row="0">
+            <MenuItem Header="Config" IsCheckable="False" IsChecked="False" FontSize="13.2">
+                <MenuItem.ToolTip>
+                    <ToolTip>Connect to Power Supplies.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Connect" Header="Connect" IsCheckable="False" IsChecked="False" Click="Connect_Click"/>
+                <MenuItem x:Name="Exit" Header="Exit" IsCheckable="False" IsChecked="False" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Display Panel" IsCheckable="False" IsChecked="False" FontSize="13.2">
+                <MenuItem.ToolTip>
+                    <ToolTip>Options for Source Device.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem Header="Source Border Color" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="SoBC_Green" Header="Green" IsCheckable="True" IsChecked="False" Click="SoBC_Green_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00FF17" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_Blue" Header="Blue" IsCheckable="True" IsChecked="False" Click="SoBC_Blue_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00C0FF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_Red" Header="Red" IsCheckable="True" IsChecked="True" Click="SoBC_Red_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Red" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_Yellow" Header="Yellow" IsCheckable="True" IsChecked="False" Click="SoBC_Yellow_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFFF00" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_Orange" Header="Orange" IsCheckable="True" IsChecked="False" Click="SoBC_Orange_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DarkOrange" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_Pink" Header="Pink" IsCheckable="True" IsChecked="False" Click="SoBC_Pink_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DeepPink" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_White" Header="White" IsCheckable="True" IsChecked="False" Click="SoBC_White_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SoBC_Black" Header="Black" IsCheckable="True" IsChecked="False" Click="SoBC_Black_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Black" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Source Color" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="So_Green" Header="Green" IsCheckable="True" IsChecked="False" Click="So_Green_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00FF17" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="So_Blue" Header="Blue" IsCheckable="True" IsChecked="False" Click="So_Blue_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00C0FF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="So_Red" Header="Red" IsCheckable="True" IsChecked="False" Click="So_Red_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Red" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="So_Yellow" Header="Yellow" IsCheckable="True" IsChecked="False" Click="So_Yellow_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFFF00" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="So_Orange" Header="Orange" IsCheckable="True" IsChecked="False" Click="So_Orange_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DarkOrange" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="So_Pink" Header="Pink" IsCheckable="True" IsChecked="False" Click="So_Pink_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DeepPink" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="So_White" Header="White" IsCheckable="True" IsChecked="True" Click="So_White_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Sink Border Color" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="SiBC_Green" Header="Green" IsCheckable="True" IsChecked="True" Click="SiBC_Green_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00FF17" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_Blue" Header="Blue" IsCheckable="True" IsChecked="False" Click="SiBC_Blue_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00C0FF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_Red" Header="Red" IsCheckable="True" IsChecked="False" Click="SiBC_Red_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Red" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_Yellow" Header="Yellow" IsCheckable="True" IsChecked="False" Click="SiBC_Yellow_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFFF00" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_Orange" Header="Orange" IsCheckable="True" IsChecked="False" Click="SiBC_Orange_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DarkOrange" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_Pink" Header="Pink" IsCheckable="True" IsChecked="False" Click="SiBC_Pink_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DeepPink" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_White" Header="White" IsCheckable="True" IsChecked="False" Click="SiBC_White_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="SiBC_Black" Header="Black" IsCheckable="True" IsChecked="False" Click="SiBC_Black_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Black" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Sink Color" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="Si_Green" Header="Green" IsCheckable="True" IsChecked="False" Click="Si_Green_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00FF17" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Si_Blue" Header="Blue" IsCheckable="True" IsChecked="False" Click="Si_Blue_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FF00C0FF" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Si_Red" Header="Red" IsCheckable="True" IsChecked="False" Click="Si_Red_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="Red" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Si_Yellow" Header="Yellow" IsCheckable="True" IsChecked="False" Click="Si_Yellow_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="#FFFFFF00" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Si_Orange" Header="Orange" IsCheckable="True" IsChecked="False" Click="Si_Orange_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DarkOrange" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Si_Pink" Header="Pink" IsCheckable="True" IsChecked="False" Click="Si_Pink_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="DeepPink" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="Si_White" Header="White" IsCheckable="True" IsChecked="True" Click="Si_White_Click">
+                        <MenuItem.Icon>
+                            <Rectangle Fill="White" Width="16" Height="16"></Rectangle>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Graphs" IsCheckable="False" IsChecked="False" FontSize="13.2">
+                <MenuItem.ToolTip>
+                    <ToolTip>Show Test Data on the Graph.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem Header="Show Graphs" IsCheckable="False" IsChecked="False">
+                    <MenuItem x:Name="PE_OC" Header="Power Efficiency vs Output Current" IsCheckable="True" IsChecked="False" Click="PE_OC_Click"/>
+                    <MenuItem x:Name="PE_OP" Header="Power Efficiency vs Output Power" IsCheckable="True" IsChecked="False" Click="PE_OP_Click"/>
+                    <MenuItem x:Name="PL_OC" Header="Power Loss vs Output Current" IsCheckable="True" IsChecked="False" Click="PL_OC_Click"/>
+                    <MenuItem x:Name="PL_OP" Header="Power Loss vs Output Power" IsCheckable="True" IsChecked="False" Click="PL_OP_Click"/>
+                    <MenuItem x:Name="IP_OP" Header="Input Power vs Output Power" IsCheckable="True" IsChecked="False" Click="IP_OP_Click"/>
+                    <MenuItem x:Name="IV_IC" Header="Input Voltage vs Input Current" IsCheckable="True" IsChecked="False" Click="IV_IC_Click"/>
+                    <MenuItem x:Name="OV_OC" Header="Output Voltage vs Output Current" IsCheckable="True" IsChecked="False" Click="OV_OC_Click"/>
+                    <MenuItem x:Name="IC_IV" Header="Input Current vs Input Voltage" IsCheckable="True" IsChecked="False" Click="IC_IV_Click"/>
+                    <MenuItem x:Name="OC_OV" Header="Output Current vs Output Voltage" IsCheckable="True" IsChecked="False" Click="OC_OV_Click"/>
+                </MenuItem>
+                <MenuItem x:Name="Add_test_graph" Header="Add Test to Graphs" IsCheckable="True" IsChecked="True" Click="Add_test_graph_Click"/>
+            </MenuItem>
+            <MenuItem Header="Table" IsCheckable="False" IsChecked="False">
+                <MenuItem x:Name="showTable" Header="Show Table" IsCheckable="True" IsChecked="False" Click="showTable_Click"/>
+                <MenuItem x:Name="addtoTable" Header="Add to Table" IsCheckable="True" IsChecked="True" Click="addtoTable_Click"/>
+            </MenuItem>
+            <MenuItem Header="Tests" IsCheckable="False" IsChecked="False">
+                <MenuItem x:Name="Cancel_Tests" Header="Cancel Tests" IsCheckable="False" IsChecked="False" Click="Cancel_Tests_Click"/>
+                <MenuItem x:Name="Reset_Colors" Header="Reset Color Palettes" IsCheckable="False" IsChecked="False" Click="Reset_Colors_Click" />
+            </MenuItem>
+            <MenuItem x:Name="SourceMenu" Header="Power Supply" IsCheckable="False" IsChecked="False" FontSize="13.2" IsEnabled="False">
+                <MenuItem.ToolTip>
+                    <ToolTip>Options for Power Supply.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem Header="Send Command" IsCheckable="False" IsChecked="False">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SourceCommand" Text="" Margin="0,0,0,0" VerticalContentAlignment="Center" MinWidth="90"/>
+                        <Button x:Name="sendSourceCommand" Content="Send" Margin="5,0,0,0" MinWidth="40" Click="sendSourceCommand_Click"/>
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Header="Query Command" IsCheckable="False" IsChecked="False">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SourceQuery" Text="" Margin="0,0,0,0" VerticalContentAlignment="Center" MinWidth="90"/>
+                        <Button x:Name="querySourceCommand" Content="Send" Margin="5,0,0,0" MinWidth="40" Click="querySourceCommand_Click"/>
+                    </StackPanel>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="SinkMenu" Header="DC Load" IsCheckable="False" IsChecked="False" FontSize="13.2" IsEnabled="False">
+                <MenuItem.ToolTip>
+                    <ToolTip>Options for DC Load.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem Header="Send Command" IsCheckable="False" IsChecked="False">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SinkCommand" Text="" Margin="0,0,0,0" VerticalContentAlignment="Center" MinWidth="90"/>
+                        <Button x:Name="sendSinkCommand" Content="Send" Margin="5,0,0,0" MinWidth="40" Click="sendSinkCommand_Click"/>
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Header="Query Command" IsCheckable="False" IsChecked="False">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SinkQuery" Text="" Margin="0,0,0,0" VerticalContentAlignment="Center" MinWidth="90"/>
+                        <Button x:Name="querySinkCommand" Content="Send" Margin="5,0,0,0" MinWidth="40" Click="querySinkCommand_Click"/>
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Header="Allow Set Voltage" x:Name="SinkVsetallow" IsCheckable="True" IsChecked="False" Click="SinkVsetallow_Click"/>
+            </MenuItem>
+            <MenuItem Header="Data logger" IsCheckable="False" IsChecked="False" FontSize="13.2">
+                <MenuItem.ToolTip>
+                    <ToolTip>Save Tests Results to Text Files.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="SaveOutputLog" Header="Save Output Log" IsCheckable="True" IsChecked="True" Click="SaveOutputLog_Click"/>
+                <MenuItem x:Name="SaveFinalData" Header="Save Efficiency Data" IsCheckable="True" IsChecked="True" Click="SaveFinalData_Click"/>
+                <MenuItem x:Name="SaveMeasData" Header="Save Measurement Data" IsCheckable="True" IsChecked="True" Click="SaveMeasData_Click"/>
+                <MenuItem x:Name="ClearOutputLog" Header="Clear Output Log" IsCheckable="False" IsChecked="False" Click="ClearOutputLog_Click"/>
+            </MenuItem>
+            <MenuItem Header="About" IsCheckable="False" IsChecked="False" FontSize="13.2">
+                <MenuItem.ToolTip>
+                    <ToolTip>Info about this Software.</ToolTip>
+                </MenuItem.ToolTip>
+                <MenuItem x:Name="Supported_Devices" Header="Supported Devices" IsCheckable="False" IsChecked="False" Click="Supported_Devices_Click"/>
+                <MenuItem x:Name="Credits" Header="Credits" IsCheckable="False" IsChecked="False" Click="Credits_Click"/>
+            </MenuItem>
+        </Menu>
+        <Rectangle Grid.ColumnSpan="2" Grid.Row="1" Fill="Black" Panel.ZIndex="0"/>
+        <Border x:Name="Source_Border" Grid.Column="0" Grid.Row="1" BorderThickness="3" BorderBrush="Red" CornerRadius="5,5,5,5" Margin="5,9,5,5"></Border>
+        <GroupBox x:Name="Source_GroupBox" Grid.Column="0" Grid.Row="1" Margin="5,0,5,5" Foreground="White" BorderThickness="0" Panel.ZIndex="1">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="So_text1" FontWeight="Normal" Foreground="White" Background="Black" Margin="0,0,0,0">Source (Input)</TextBlock>
+                    </StackPanel>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                        <Label x:Name="So_Volt_Val" Content="0" Foreground="White" VerticalAlignment="Center" FontSize="37"/>
+                        <Label x:Name="So_text2" Content="V" Foreground="White" VerticalAlignment="Center" FontSize="37" Margin="-5,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                        <Label x:Name="So_Curr_Val" Content="0" Foreground="White" VerticalAlignment="Center" FontSize="37"/>
+                        <Label x:Name="So_text3" Content="A" Foreground="White" VerticalAlignment="Center" FontSize="37" Margin="-5,0,0,0"/>
+                    </StackPanel>
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Label x:Name="So_text4" Content="Set Voltage:" Foreground="White" VerticalAlignment="Center" FontSize="14"/>
+                            <Label x:Name="So_SetVolt_Val" Content="0" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                            <Label x:Name="So_text5" Content="V" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <Label x:Name="So_text6" Content="Set Current:" Foreground="White" VerticalAlignment="Center" FontSize="14"/>
+                            <Label x:Name="So_SetCurr_Val" Content="0" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                            <Label x:Name="So_text7" Content="A" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                        <Label x:Name="So_Power_Val" Content="0" Foreground="White" VerticalAlignment="Center" FontSize="37"/>
+                        <Label x:Name="So_text8" Content="W" Foreground="White" VerticalAlignment="Center" FontSize="37" Margin="-5,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        <Border x:Name="Sink_Border" Grid.Column="1" Grid.Row="1" BorderThickness="3" BorderBrush="#FF00FF17" CornerRadius="5,5,5,5" Margin="5,9,5,5"></Border>
+            <GroupBox x:Name="Sink_GroupBox" Grid.Column="1" Grid.Row="1" Margin="5,0,5,5" Foreground="White" BorderThickness="0" Panel.ZIndex="1">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="Si_text1" FontWeight="Normal" Foreground="White" Background="Black" Margin="0,0,0,0">Sink (Output)</TextBlock>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <Label x:Name="Si_Volt_Val" Content="0" Foreground="White" VerticalAlignment="Center" FontSize="37"/>
+                    <Label x:Name="Si_text2" Content="V" Foreground="White" VerticalAlignment="Center" FontSize="37" Margin="-5,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                    <Label x:Name="Si_Curr_Val" Content="0" Foreground="White" VerticalAlignment="Center" FontSize="37"/>
+                    <Label x:Name="Si_text3" Content="A" Foreground="White" VerticalAlignment="Center" FontSize="37" Margin="-5,0,0,0"/>
+                </StackPanel>
+                <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Label x:Name="Si_text4" Content="Set Voltage:" Foreground="White" VerticalAlignment="Center" FontSize="14"/>
+                        <Label x:Name="Si_SetVolt_Val" Content="0" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                        <Label x:Name="Si_text5" Content="V" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Label x:Name="Si_text6" Content="Set Current:" Foreground="White" VerticalAlignment="Center" FontSize="14"/>
+                        <Label x:Name="Si_SetCurr_Val" Content="0" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                        <Label x:Name="Si_text7" Content="A" Foreground="White" VerticalAlignment="Center" Margin="-5,0,0,0" FontSize="16"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                    <Label x:Name="Si_Power_Val" Content="0" Foreground="White" VerticalAlignment="Center" FontSize="37"/>
+                    <Label x:Name="Si_text8" Content="W" Foreground="White" VerticalAlignment="Center" FontSize="37" Margin="-5,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="SourceInput" Grid.Column="0" Grid.Row="2" Margin="5,-2,5,0" IsEnabled="False">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Margin="0,0,2,0">Source [Input Voltage] [Voltage Sweep]:</TextBlock>
+                    <TextBlock x:Name="SourceInputModel" FontWeight="Bold">Unknown</TextBlock>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Start Voltage:" VerticalContentAlignment="Center" Margin="-2,-2,0,0"/>
+                    <TextBox x:Name="StartV" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label Content="V" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                    <Label x:Name="StopVLabel_1" Content="Stop Voltage:" VerticalContentAlignment="Center" Margin="2,-2,0,0"/>
+                    <TextBox x:Name="StopV" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label x:Name="StopVLabel_2" Content="V" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                    <Label x:Name="IncV_Label_1" Content="Increment By:" VerticalContentAlignment="Center" Margin="-4,-2,0,0"/>
+                    <TextBox x:Name="IncV" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label x:Name="IncV_Label_2" Content="V" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="Current Limit:" VerticalContentAlignment="Center" Margin="1,-2,0,0"/>
+                    <TextBox x:Name="CurrLimit" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label Content="A" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="SinkOutput" Grid.Column="1" Grid.Row="2" Margin="5,-2,5,0" IsEnabled="False">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Margin="0,0,2,0">Sink [Output Load] [Current Sweep]:</TextBlock>
+                    <TextBlock x:Name="SinkInputModel" FontWeight="Bold">Unknown</TextBlock>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Start Current:" VerticalContentAlignment="Center" Margin="-2,-2,0,0"/>
+                    <TextBox x:Name="StartC" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label Content="A" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Stop Current:" VerticalContentAlignment="Center" Margin="2,-2,0,0"/>
+                    <TextBox x:Name="StopC" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label Content="A" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="Increment By:" VerticalContentAlignment="Center" Margin="-4,-2,0,0"/>
+                    <TextBox x:Name="IncC" Text="" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2"/>
+                    <Label Content="A" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                    <Label x:Name="sinkvolttext" Content="Set Voltage:" VerticalContentAlignment="Center" Margin="9,-2,0,0" IsEnabled="False"/>
+                    <TextBox x:Name="SetV" Text="0" VerticalContentAlignment="Center" MaxWidth="76" MinWidth="76" Margin="0,2,0,2" IsEnabled="False"/>
+                    <Label x:Name="sinkvoltUnit" Content="V" VerticalContentAlignment="Center" Margin="-2,0,0,0" IsEnabled="False"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="Test_Config_Box" Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" IsEnabled="False">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Margin="0,0,0,0">Test Config</TextBlock>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Measurement Samples per Test:" VerticalContentAlignment="Center"/>
+                    <TextBox x:Name="sampleNum" Text="20" VerticalContentAlignment="Center" MinWidth="70" Margin="0,4,0,4"/>
+                    <Label Content="Samples" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="Add Offset to Efficiency Values:" VerticalContentAlignment="Center" Margin="4,0,0,0"/>
+                    <TextBox x:Name="offsetNum" Text="0" VerticalContentAlignment="Center" MinWidth="70" Margin="0,4,0,4"/>
+                    <Label Content="%" VerticalContentAlignment="Center" Margin="-2,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="StartInput" Grid.Row="3" Grid.Column="1" Margin="5,0,5,0" IsEnabled="False">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Margin="0,0,0,0">Test Start</TextBlock>
+                </StackPanel>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Test Name:" VerticalContentAlignment="Center" Margin="0,0,0,0"/>
+                    <TextBox x:Name="test_Name" Text="" VerticalContentAlignment="Center" MinWidth="100" Margin="0,4,0,4"/>
+                    <Label Content="Test Files Directory:" VerticalContentAlignment="Center" Margin="16,0,0,0"/>
+                    <Button x:Name="folderOpen" Content="Open" MinWidth="45" Margin="1,4,0,4" Click="folderOpen_Click"/>
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="Single Input (No Sweep):" Margin="0,0,0,0"/>
+                    <CheckBox x:Name="NoSweep" Margin="0,0,0,0" VerticalAlignment="Center" Unchecked="NoSweep_Unchecked" Checked="NoSweep_Checked" IsChecked="False"/>
+                    <Button x:Name="ClearInputs" Content="Clear" MinWidth="45" Margin="30,0,0,0" Click="ClearInputs_Click"/>
+                    <Button x:Name="VerifyInputs" Content="Verify" MinWidth="45" Margin="10,0,0,0" Click="VerifyInputs_Click"/>
+                    <Button x:Name="Start_Test" Content="Start" MinWidth="45" Margin="10,0,0,0" Click="Start_Test_Click"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.ColumnSpan="2" Grid.Row="4" Margin="5,0,5,0">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Clear" Click="ClearOutputLog_Click" Margin="0,0,5,0" Width="32" Height="19"/>
+                    <TextBlock FontWeight="Bold" Margin="0,2,0,0">Output Log</TextBlock>
+                </StackPanel>
+            </GroupBox.Header>
+            <ScrollViewer x:Name="Output_Log_Scroll" Margin="0,0,0,0" HorizontalScrollBarVisibility="Auto">
+                <TextBlock x:Name="Output_Log" FontSize="12"/>
+            </ScrollViewer>
+        </GroupBox>
+        <StatusBar Grid.ColumnSpan="2" Grid.Row="5">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="95"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="85"/>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="110"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <Label Content="Test Runtime" Margin="0,-2,0,0" FontSize="14"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <Label x:Name="timer" Content="00:00:00" Margin="-10,-2,0,0" FontSize="14"/>
+            </StatusBarItem>
+            <Separator Grid.Column="2" Width="2" Margin="-14,0,0,0"/>
+            <StatusBarItem Grid.Column="3">
+                <Label Content="Test Status:" Margin="-10,-2,0,0" FontSize="14"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <Label x:Name="status" Content="Not Running" Margin="-12,-2,0,-2" FontSize="14"/>
+            </StatusBarItem>
+            <Separator Grid.Column="5" Width="2" Margin="-14,0,0,0"/>
+            <StatusBarItem Grid.Column="6">
+                <Label Content="Tests Completed:" Margin="-10,-2,0,-2" FontSize="14"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7" HorizontalContentAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="testNum" Content="0" Margin="-10,-2,0,-2" FontSize="14"/>
+                    <Label Content="of" Margin="-5,-2,0,-2" FontSize="14"/>
+                    <Label x:Name="testTotal" Content="0" Margin="-5,-2,0,-2" FontSize="14"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator Grid.Column="8" Width="2" Margin="-12,0,0,0"/>
+            <StatusBarItem Grid.Column="9">
+                <Label Content="Progress" Margin="-10,-2,0,-2" FontSize="14"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="10" HorizontalContentAlignment="Stretch">
+                <ProgressBar x:Name="testProgress" Minimum="0" Maximum="100" Value="0" Height="20" Margin="-5,-2,5,-2"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

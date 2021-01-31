@@ -2103,7 +2103,7 @@ namespace Power_Efficiency_663XB
 
         private void saveFinalResults_toFile(string inputVoltage)
         {
-            string textName = TestFolderPath + @"\" + "[Final Results][Source] Input Voltage " + inputVoltage + "V" + ".txt";
+            string textName = TestFolderPath + @"\" + testName + "-" + "[Final Results] Input Voltage " + inputVoltage + "V" + ".txt";
             try
             {
                 using (TextWriter datatotxt = new StreamWriter(textName, true))

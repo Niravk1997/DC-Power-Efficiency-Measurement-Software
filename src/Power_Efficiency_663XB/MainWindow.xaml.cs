@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -241,6 +242,11 @@ namespace Power_Efficiency_663XB
         public MainWindow()
         {
             InitializeComponent();
+            if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+            }
             saveOutputLog = false;
             Color_Palette(); 
             insert_Log("Welcome " + getUserName() + ", to my DC Power Efficiency Measurement Software.", Config_Code);

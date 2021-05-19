@@ -2,6 +2,7 @@
 using ScottPlot;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,11 @@ namespace Power_Efficiency_663XB
         public Graph_Window()
         {
             InitializeComponent();
+            if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+            }
             Graph.plt.Legend(enableLegend: true);
         }
 

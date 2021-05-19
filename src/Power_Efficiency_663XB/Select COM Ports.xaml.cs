@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -68,6 +69,11 @@ namespace Power_Efficiency_663XB
         public Select_COM_Ports()
         {
             InitializeComponent();
+            if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+            }
             Get_COM_List();
             Serial_COM_Data.WindowOpen = true;
             getSoftwarePath();

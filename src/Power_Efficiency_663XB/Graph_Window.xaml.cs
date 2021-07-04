@@ -21,7 +21,7 @@ using System.Windows.Threading;
 
 namespace Power_Efficiency_663XB
 {
-    
+
     public partial class Graph_Window : Window
     {
         Boolean showLegend = true;
@@ -49,32 +49,68 @@ namespace Power_Efficiency_663XB
 
         public void insertGraph(string GraphName, List<double> Xvalues, List<double> Yvalues, string Colour)
         {
-            try
+            if (Dispatcher.Thread == System.Threading.Thread.CurrentThread)
             {
-                string[] Color_Parts = Colour.Split(',');
-                System.Drawing.Color Plot_Color = System.Drawing.Color.FromArgb(Convert.ToInt32(Color_Parts[0]), Convert.ToInt32(Color_Parts[1]), Convert.ToInt32(Color_Parts[2]));
-                Graph.plt.PlotScatter(Xvalues.ToArray(), Yvalues.ToArray(), color: Plot_Color, label: GraphName);
-                if (AutoAxis == true & MouseTrack == false)
+                try
                 {
-                    Graph.plt.AxisAuto();
+                    string[] Color_Parts = Colour.Split(',');
+                    System.Drawing.Color Plot_Color = System.Drawing.Color.FromArgb(Convert.ToInt32(Color_Parts[0]), Convert.ToInt32(Color_Parts[1]), Convert.ToInt32(Color_Parts[2]));
+                    Graph.plt.PlotScatter(Xvalues.ToArray(), Yvalues.ToArray(), color: Plot_Color, label: GraphName);
+                    if (AutoAxis == true & MouseTrack == false)
+                    {
+                        Graph.plt.AxisAuto();
+                    }
+                    Graph.Render(skipIfCurrentlyRendering: true);
                 }
-                Graph.Render(skipIfCurrentlyRendering: true);
+                catch (Exception Ex)
+                {
+                    insert_Log(Ex.Message + "Here", "0,0,0");
+                    insert_Log("Error: Could not add Test to Graph.", "0,0,0");
+                }
             }
-            catch (Exception)
+            else
             {
-                insert_Log("Error: Could not add Test to Graph.", "0,0,0");
+                Dispatcher.Invoke(DispatcherPriority.Normal, (System.Threading.ThreadStart)(delegate
+                {
+                    try
+                    {
+                        string[] Color_Parts = Colour.Split(',');
+                        System.Drawing.Color Plot_Color = System.Drawing.Color.FromArgb(Convert.ToInt32(Color_Parts[0]), Convert.ToInt32(Color_Parts[1]), Convert.ToInt32(Color_Parts[2]));
+                        Graph.plt.PlotScatter(Xvalues.ToArray(), Yvalues.ToArray(), color: Plot_Color, label: GraphName);
+                        if (AutoAxis == true & MouseTrack == false)
+                        {
+                            Graph.plt.AxisAuto();
+                        }
+                        Graph.Render(skipIfCurrentlyRendering: true);
+                    }
+                    catch (Exception Ex)
+                    {
+                        insert_Log(Ex.Message + "Here", "0,0,0");
+                        insert_Log("Error: Could not add Test to Graph.", "0,0,0");
+                    }
+                }));
             }
         }
 
         public void insert_Log(string Message, string Colour)
         {
-            string[] Color_Parts = Colour.Split(',');
-            SolidColorBrush Plot_Color = new SolidColorBrush(Color.FromArgb(255, (byte)Convert.ToInt32(Color_Parts[0]), (byte)Convert.ToInt32(Color_Parts[1]), (byte)Convert.ToInt32(Color_Parts[2])));
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            if (Dispatcher.Thread == System.Threading.Thread.CurrentThread)
             {
+                string[] Color_Parts = Colour.Split(',');
+                SolidColorBrush Plot_Color = new SolidColorBrush(Color.FromArgb(255, (byte)Convert.ToInt32(Color_Parts[0]), (byte)Convert.ToInt32(Color_Parts[1]), (byte)Convert.ToInt32(Color_Parts[2])));
                 Output_Log.Inlines.Add(new Run(Message + "\n") { Foreground = Plot_Color });
                 Output_Log_Scroll.ScrollToBottom();
-            }));
+            }
+            else
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, (System.Threading.ThreadStart)(delegate
+                {
+                    string[] Color_Parts = Colour.Split(',');
+                    SolidColorBrush Plot_Color = new SolidColorBrush(Color.FromArgb(255, (byte)Convert.ToInt32(Color_Parts[0]), (byte)Convert.ToInt32(Color_Parts[1]), (byte)Convert.ToInt32(Color_Parts[2])));
+                    Output_Log.Inlines.Add(new Run(Message + "\n") { Foreground = Plot_Color });
+                    Output_Log_Scroll.ScrollToBottom();
+                }));
+            }
         }
 
         private void bgGreen_Text_Click(object sender, RoutedEventArgs e)

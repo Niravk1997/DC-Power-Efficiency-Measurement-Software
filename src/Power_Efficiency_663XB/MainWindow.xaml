@@ -499,7 +499,13 @@
                 </StackPanel>
             </GroupBox.Header>
             <ScrollViewer x:Name="Output_Log_Scroll" Margin="0,0,0,0" HorizontalScrollBarVisibility="Auto">
-                <TextBlock x:Name="Output_Log" FontSize="12"/>
+                <ItemsControl  ItemsSource="{Binding Output_Log}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
             </ScrollViewer>
         </GroupBox>
         <StatusBar Grid.ColumnSpan="2" Grid.Row="5">

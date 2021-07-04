@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -96,8 +97,8 @@ namespace Power_Efficiency_663XB
         //Sink = DC Load = Output
 
         //[Power Supply] Initially Loaded with SCPI Commands, to be replaced by user
-        string Input_setVolt = "VOLT"; 
-        string Input_setCurr = "CURR"; 
+        string Input_setVolt = "VOLT";
+        string Input_setCurr = "CURR";
         string Input_measVolt = "MEAS:VOLT?";
         string Input_measCurr = "MEAS:CURR?";
         string Input_outputON = "OUTPut ON";
@@ -153,9 +154,7 @@ namespace Power_Efficiency_663XB
         private DispatcherTimer timer_update;
 
         bool testStart = false;
-        int seconds;
-        TimeSpan time;
-        string Time;
+        DateTime Start_Time;
 
 
         //All data is saved to text file by default, unitl user disables it.
@@ -239,6 +238,14 @@ namespace Power_Efficiency_663XB
         bool skipStep = false; //Skip Calculating Efficiency if bad sample.
         int invalidSamples; //Invalid Samples
 
+        public ObservableCollection<TextBlock> Output_Log
+        {
+            get { return (ObservableCollection<TextBlock>)this.GetValue(Output_Log_Property); }
+            set { this.SetValue(Output_Log_Property, value); }
+        }
+
+        public static readonly DependencyProperty Output_Log_Property = DependencyProperty.Register(nameof(Output_Log), typeof(ObservableCollection<TextBlock>), typeof(TextBlock), new PropertyMetadata(default(ObservableCollection<TextBlock>)));
+
         public MainWindow()
         {
             InitializeComponent();
@@ -247,30 +254,32 @@ namespace Power_Efficiency_663XB
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
             }
+            DataContext = this;
+            Output_Log = new ObservableCollection<TextBlock>();
             saveOutputLog = false;
-            Color_Palette(); 
+            Color_Palette();
             insert_Log("Welcome " + getUserName() + ", to my DC Power Efficiency Measurement Software.", Config_Code);
             insert_Log("To use this software you will need a power supply and a DC Electronic Load.", Config_Code);
             insert_Log("If you don't have a DC Electronic Load then you may use a 2/4 Quadrant Power Supply that has programmable current sink capability.", Config_Code);
             insert_Log("Click on Config Menu and then click Connect to get started.", Config_Code);
         }
 
-        public string getUserName() 
+        public string getUserName()
         {
             try
             {
                 string WelcomeName = System.Environment.UserName;
                 return (char.ToUpper(WelcomeName[0]) + WelcomeName.Substring(1));
             }
-            catch (Exception) 
+            catch (Exception)
             {
-                
+
             }
             return "Unknown";
         }
 
         //Timer, runs every 1 second
-        private void timerStart(object sender, RoutedEventArgs e) 
+        private void timerStart(object sender, RoutedEventArgs e)
         {
             timer_update = new DispatcherTimer();
             timer_update.Interval = TimeSpan.FromSeconds(1);
@@ -279,13 +288,22 @@ namespace Power_Efficiency_663XB
         }
 
         //updates the runtime timer when tests starts
-        private void runtime_Update(object sender, EventArgs e) 
+        private void runtime_Update(object sender, EventArgs e)
         {
-            if (Serial_COM_Data.Connected == true) 
+            if (testStart == true)
+            {
+                TimeSpan Established_Time = DateTime.Now - Start_Time;
+                timer.Content = Established_Time.ToString("hh':'mm':'ss");
+            }
+        }
+
+        private void Serial_Communication_Initiated()
+        {
+            if (Serial_COM_Data.Connected == true)
             {
                 Connect.IsEnabled = false;
                 unlockControls();
-                if (SCPI_Commands.customPower_Commands == true) 
+                if (SCPI_Commands.customPower_Commands == true)
                 {
                     setPowerSupplyCommands();
                     printPowerSupplyCommands();
@@ -295,21 +313,15 @@ namespace Power_Efficiency_663XB
                     setLoadCommands();
                     printLoadCommands();
                 }
-                Serial_COM_Data.Connected = false;
             }
-
-            if (testStart == true) 
+            else
             {
-                seconds++;
-                time = TimeSpan.FromSeconds(seconds);
-                Time = time.ToString(@"hh\:mm\:ss");
-                timer.Content = Time;
+                Connect.IsChecked = false;
             }
-
         }
 
         //Once power supply and DC load are connected, all UI controls are enable
-        private void unlockControls() 
+        private void unlockControls()
         {
             SourceMenu.IsEnabled = true;
             SinkMenu.IsEnabled = true;
@@ -335,7 +347,7 @@ namespace Power_Efficiency_663XB
         //Load power supply command, if they were loaded
         private void setPowerSupplyCommands()
         {
-            Input_setVolt = SCPI_Commands.Input_setVolt;  
+            Input_setVolt = SCPI_Commands.Input_setVolt;
             Input_setCurr = SCPI_Commands.Input_setCurr;
             Input_measVolt = SCPI_Commands.Input_measVolt;
             Input_measCurr = SCPI_Commands.Input_measCurr;
@@ -348,7 +360,7 @@ namespace Power_Efficiency_663XB
         }
 
         //Prints the custom power supply command
-        private void printPowerSupplyCommands() 
+        private void printPowerSupplyCommands()
         {
             insert_Log("Set Voltage: " + Input_setVolt, Config_Code);
             insert_Log("Set Current: " + Input_setCurr, Config_Code);
@@ -363,7 +375,7 @@ namespace Power_Efficiency_663XB
         }
 
         //loads dc load commands, if they were loaded
-        private void setLoadCommands() 
+        private void setLoadCommands()
         {
             Output_setVolt = SCPI_Commands.Output_setVolt;
             Output_setCurr = SCPI_Commands.Output_setCurr;
@@ -395,29 +407,29 @@ namespace Power_Efficiency_663XB
         //Opens serial COM window
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            if (Serial_COM_Data.WindowOpen == false)
+            if (Select_COM_Window == null)
             {
                 Select_COM_Window = new Select_COM_Ports();
-                if (Select_COM_Window.IsActive == false)
-                {
-                    Select_COM_Window.Show();
-                }
+                Select_COM_Window.Closed += (a, b) => { Select_COM_Window = null; Serial_Communication_Initiated(); };
+                Select_COM_Window.Show();
+                Connect.IsChecked = true;
             }
-            else 
+            else
             {
                 insert_Log("COM Select Window is already open.", Warning_Code);
+                Connect.IsChecked = true;
             }
         }
 
         //30 color palettes, after that random color are assigned
-        private void Color_Palette() 
+        private void Color_Palette()
         {
             try
             {
                 Colours.Clear();
                 Colours = new Queue<string>(new string[] { "220,20,60", "34,139,34", "0,191,255", "255,20,147", "255,165,0", "255,255,0", "128,0,128", "240,230,140", "124,252,0", "233,150,122", "255,0,255", "0,0,205", "255,69,0", "85,107,47", "127,0,0", "72,61,139", "0,139,139", "210,105,30", "154,205,50", "143,188,143", "176,48,96", "0,255,127", "0,255,255", "218,112,214", "176,196,222", "30,144,255", "123,104,238", "105,105,105", "0,0,128", "144,238,144" });
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 insert_Log("Could not initialized/reset color palette.", Error_Code);
             }
@@ -456,7 +468,7 @@ namespace Power_Efficiency_663XB
         }
 
         //serial code for dc laod, write and read
-        private string SinkWriteRead(string Command) 
+        private string SinkWriteRead(string Command)
         {
             try
             {
@@ -499,7 +511,7 @@ namespace Power_Efficiency_663XB
         }
 
         //write only to dc load, serial code
-        private void SinkWrite(string Command) 
+        private void SinkWrite(string Command)
         {
             try
             {
@@ -536,7 +548,7 @@ namespace Power_Efficiency_663XB
         }
 
         //inserts message to the output log
-        private void insert_Log(string Message, int Code) 
+        private void insert_Log(string Message, int Code)
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd h:mm:ss tt");
             SolidColorBrush Color = Brushes.Black;
@@ -581,12 +593,17 @@ namespace Power_Efficiency_663XB
                 Status = "[Result]";
                 Color = Brushes.BlueViolet;
             }
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
-                Output_Log.Inlines.Add(new Run("[" + date + "]" + " " + Status + " " + Message + "\n") { Foreground = Color });
+                TextBlock Output_Log_Text = new TextBlock
+                {
+                    Foreground = Color,
+                    Text = "[" + date + "]" + " " + Status + " " + Message
+                };
+                Output_Log.Add(Output_Log_Text);
                 Output_Log_Scroll.ScrollToBottom();
             }));
-            if (saveOutputLog == true) 
+            if (saveOutputLog == true)
             {
                 writeToFile("[" + date + "]" + Message, Serial_COM_Data.folder_Directory, OutputLogFile, true);
             }
@@ -688,7 +705,7 @@ namespace Power_Efficiency_663XB
             Source_Border.BorderBrush = Color;
         }
 
-        private void Source_PanelColor(string HexValue) 
+        private void Source_PanelColor(string HexValue)
         {
             SolidColorBrush Color = new SolidColorBrush((Color)ColorConverter.ConvertFromString(HexValue));
             Source_GroupBox.Foreground = Color;
@@ -1141,7 +1158,7 @@ namespace Power_Efficiency_663XB
                     datatotxt.WriteLine(data.Trim());
                 }
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 insert_Log("Cannot write to text file.", Error_Code);
             }
@@ -1169,8 +1186,7 @@ namespace Power_Efficiency_663XB
 
         private void ClearOutputLog_Click(object sender, RoutedEventArgs e)
         {
-            Output_Log.Text = String.Empty;
-            Output_Log.Inlines.Clear();
+            Output_Log.Clear();
         }
 
         private void ClearInputs_Click(object sender, RoutedEventArgs e)
@@ -1190,21 +1206,21 @@ namespace Power_Efficiency_663XB
         private void VerifyInputs_Click(object sender, RoutedEventArgs e)
         {
             Actual_Test = false;
-            if (verifyConfig() == 0) 
+            if (verifyConfig() == 0)
             {
                 insert_Log("All Input fields are valid. Starting Verification Testing.", Success_Code);
                 if (mockTest() == 0)
                 {
                     insert_Log("Verification Test Successful. Press Start when you are ready.", Success_Code);
                 }
-                else 
+                else
                 {
                     insert_Log("Verification Test Failed. Please check your Test Settings.", Error_Code);
                 }
             }
         }
 
-        private int verifyConfig() 
+        private int verifyConfig()
         {
             Tests_status(2);
             if (SingleSweep == false)
@@ -1217,7 +1233,7 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private int verifyConfig_Sweep() 
+        private int verifyConfig_Sweep()
         {
             if (checkStartVoltage() == 1)
             {
@@ -1269,7 +1285,7 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private int verifyConfig_NoSweep() 
+        private int verifyConfig_NoSweep()
         {
             if (checkStartVoltage() == 1)
             {
@@ -1313,7 +1329,7 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private int isPositiveNumber(string Inputtext) 
+        private int isPositiveNumber(string Inputtext)
         {
             try
             {
@@ -1321,30 +1337,30 @@ namespace Power_Efficiency_663XB
                 {
                     return (1);
                 }
-                else 
+                else
                 {
                     return (0);
                 }
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return (1);
             }
         }
 
-        private double convertTodouble(string number_text) 
+        private double convertTodouble(string number_text)
         {
             return (double.Parse(number_text, System.Globalization.NumberStyles.Float));
         }
 
-        private int checkStartVoltage() 
+        private int checkStartVoltage()
         {
             if (isPositiveNumber(StartV.Text) == 1)
             {
                 insert_Log("[Source] Start Voltage must be a positive number.", Error_Code);
                 return (1);
-            } 
-            else if (convertTodouble(StartV.Text) > Serial_COM_Data.Source_Max_Voltage) 
+            }
+            else if (convertTodouble(StartV.Text) > Serial_COM_Data.Source_Max_Voltage)
             {
                 insert_Log("[Source] Start Voltage must be less than " + Serial_COM_Data.Source_Max_Voltage + "V", Error_Code);
                 return (1);
@@ -1440,7 +1456,7 @@ namespace Power_Efficiency_663XB
                 insert_Log("[Sink] Start Current must be a positive number.", Error_Code);
                 return (1);
             }
-            else if (convertTodouble(StartC.Text) > Serial_COM_Data.Sink_Max_Current) 
+            else if (convertTodouble(StartC.Text) > Serial_COM_Data.Sink_Max_Current)
             {
                 insert_Log("[Sink] Start Current must be a less than " + Serial_COM_Data.Sink_Max_Current + "A", Error_Code);
                 return (1);
@@ -1495,7 +1511,7 @@ namespace Power_Efficiency_663XB
                 insert_Log("[Sink] Increment Current must be a greater than " + minProgramCurrent.ToString() + "A", Error_Code);
                 return (1);
             }
-            else if (convertTodouble(IncC.Text) > Math.Round((stopCurrent - startCurrent),CurrentResolution))
+            else if (convertTodouble(IncC.Text) > Math.Round((stopCurrent - startCurrent), CurrentResolution))
             {
                 insert_Log("[Sink] Increment Current must be less than or equal to " + Math.Round((stopCurrent - startCurrent), CurrentResolution).ToString() + "A", Error_Code);
                 insert_Log("[Sink] Start and Stop Current values may be too close to each other", Warning_Code);
@@ -1516,7 +1532,7 @@ namespace Power_Efficiency_663XB
                 insert_Log("[Sink] Set Voltage must be a positive number.", Error_Code);
                 return (1);
             }
-            else if (convertTodouble(SetV.Text) > Serial_COM_Data.Sink_Max_Voltage) 
+            else if (convertTodouble(SetV.Text) > Serial_COM_Data.Sink_Max_Voltage)
             {
                 insert_Log("[Sink] Set Voltage must be less than " + Serial_COM_Data.Sink_Max_Voltage, Error_Code);
                 return (1);
@@ -1525,7 +1541,7 @@ namespace Power_Efficiency_663XB
             {
                 setVoltage = Math.Round(convertTodouble(SetV.Text), VoltageResolution);
                 SetV.Text = setVoltage.ToString();
-                if (setVoltage > 0) 
+                if (setVoltage > 0)
                 {
                     insert_Log("[Sink] Set Voltage is usually set to 0V.", Warning_Code);
                     insert_Log("[Sink] May cause damage to Device Under Test (DUT) if not set to 0V.", Warning_Code);
@@ -1536,7 +1552,7 @@ namespace Power_Efficiency_663XB
 
         private int checkMeasSamples()
         {
-            try 
+            try
             {
                 MeasSamples = int.Parse(sampleNum.Text, System.Globalization.NumberStyles.Float);
                 if (MeasSamples <= 0)
@@ -1544,7 +1560,7 @@ namespace Power_Efficiency_663XB
                     insert_Log("Measurement Samples per Test Value must be a positive integer.", Error_Code);
                     return (1);
                 }
-                else 
+                else
                 {
                     return (0);
                 }
@@ -1563,7 +1579,7 @@ namespace Power_Efficiency_663XB
                 offsetEfficiency = double.Parse(offsetNum.Text, System.Globalization.NumberStyles.Float);
                 offsetEfficiency = Math.Round(offsetEfficiency, 2);
                 offsetNum.Text = offsetEfficiency.ToString();
-                if (offsetEfficiency != 0) 
+                if (offsetEfficiency != 0)
                 {
                     insert_Log("Offset Efficiency Value is usually set to 0", Warning_Code);
                 }
@@ -1576,7 +1592,7 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private int checkTestName() 
+        private int checkTestName()
         {
             Regex check = new Regex(@"^[a-zA-Z0-9\s,]*$");
             if (check.IsMatch(test_Name.Text) == false)
@@ -1584,7 +1600,7 @@ namespace Power_Efficiency_663XB
                 insert_Log("Test Name must be alphanumeric. Must only contain letters and numbers.", Error_Code);
                 return (1);
             }
-            else 
+            else
             {
                 testName = test_Name.Text;
                 return (0);
@@ -1622,21 +1638,22 @@ namespace Power_Efficiency_663XB
 
         }
 
-        private int mockTest() 
+        private int mockTest()
         {
             total_SourceInput_Voltage_Values = 0;
             total_SinkOutput_Current_Values = 0;
             total_Measurements = 0;
             total_Tests = 0;
-            if (SingleSweep == true) 
+            if (SingleSweep == true)
             {
                 stopVoltage = startVoltage + 0.1;
             }
             for (double i = startVoltage; i <= stopVoltage; i = Math.Round((i + incrementVoltage), VoltageResolution))
             {
                 //Set Source Voltage
-                if (Actual_Test == false) { 
-                    insert_Log("[Source] Set Voltage: " + i.ToString() + "V", Message_Code); 
+                if (Actual_Test == false)
+                {
+                    insert_Log("[Source] Set Voltage: " + i.ToString() + "V", Message_Code);
                 }
                 total_SourceInput_Voltage_Values++;
                 for (double j = startCurrent; j <= stopCurrent; j = Math.Round((j + incrementCurrent), CurrentResolution))
@@ -1665,14 +1682,14 @@ namespace Power_Efficiency_663XB
                 {
                     insert_Log("Tests Completed: " + total_Tests.ToString(), Message_Code);
                 }
-                if (SingleSweep == true) 
+                if (SingleSweep == true)
                 {
                     break;
                 }
             }
             if ((total_Measurements > Max_MeasSamples) || (total_SourceInput_Voltage_Values > max_total_SourceInput_Voltage_Values))
             {
-                if ((total_Measurements > Max_MeasSamples)) 
+                if ((total_Measurements > Max_MeasSamples))
                 {
                     insert_Log("Verification Failed. Your Voltage and/or Current Sweep Range might be too large.", Error_Code);
                     insert_Log("Check Measurement Samples per Test Value, it might also be too large.", Error_Code);
@@ -1689,7 +1706,7 @@ namespace Power_Efficiency_663XB
                 insert_Log("Total Tests before fail: " + total_Tests.ToString(), Warning_Code);
                 return (1);
             }
-            else 
+            else
             {
                 if (Actual_Test == false)
                 {
@@ -1705,161 +1722,164 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private void EfficiencyTest() 
+        private void EfficiencyTest()
         {
-            bool folderCreated = folderCreation(Serial_COM_Data.folder_Directory + @"\" + DateTime.Now.ToString("yyyy-MM-dd h.mm.ss tt") + "-" + testName);
-            int testCompleted = 0;
-            invalidSamples = 0;
-            Tests_status(0);
-            using (var Source = new SerialPort(Serial_COM_Data.Source_COM_Port, Serial_COM_Data.Source_BaudRate, (Parity)Serial_COM_Data.Source_Parity, Serial_COM_Data.Source_DataBits, (StopBits)Serial_COM_Data.Source_StopBits))
+            Task.Run(() =>
             {
-                Source.ReadTimeout = Serial_COM_Data.Source_ReadTimeout;
-                Source.WriteTimeout = Serial_COM_Data.Source_WriteTimeout;
-                Source.Handshake = (Handshake)Serial_COM_Data.Source_Handshake;
-                Source.RtsEnable = Serial_COM_Data.Source_RtsEnable;
-                Source.Open();
-                using (var Sink = new SerialPort(Serial_COM_Data.Sink_COM_Port, Serial_COM_Data.Sink_BaudRate, (Parity)Serial_COM_Data.Sink_Parity, Serial_COM_Data.Sink_DataBits, (StopBits)Serial_COM_Data.Sink_StopBits))
+                bool folderCreated = folderCreation(Serial_COM_Data.folder_Directory + @"\" + DateTime.Now.ToString("yyyy-MM-dd h.mm.ss tt") + "-" + testName);
+                int testCompleted = 0;
+                invalidSamples = 0;
+                Start_Time = DateTime.Now;
+                Tests_status(0);
+                using (var Source = new SerialPort(Serial_COM_Data.Source_COM_Port, Serial_COM_Data.Source_BaudRate, (Parity)Serial_COM_Data.Source_Parity, Serial_COM_Data.Source_DataBits, (StopBits)Serial_COM_Data.Source_StopBits))
                 {
-                    Sink.ReadTimeout = Serial_COM_Data.Sink_ReadTimeout;
-                    Sink.WriteTimeout = Serial_COM_Data.Sink_WriteTimeout;
-                    Sink.Handshake = (Handshake)Serial_COM_Data.Sink_Handshake;
-                    Sink.RtsEnable = Serial_COM_Data.Sink_RtsEnable;
-                    Sink.Open();
+                    Source.ReadTimeout = Serial_COM_Data.Source_ReadTimeout;
+                    Source.WriteTimeout = Serial_COM_Data.Source_WriteTimeout;
+                    Source.Handshake = (Handshake)Serial_COM_Data.Source_Handshake;
+                    Source.RtsEnable = Serial_COM_Data.Source_RtsEnable;
+                    Source.Open();
+                    using (var Sink = new SerialPort(Serial_COM_Data.Sink_COM_Port, Serial_COM_Data.Sink_BaudRate, (Parity)Serial_COM_Data.Sink_Parity, Serial_COM_Data.Sink_DataBits, (StopBits)Serial_COM_Data.Sink_StopBits))
+                    {
+                        Sink.ReadTimeout = Serial_COM_Data.Sink_ReadTimeout;
+                        Sink.WriteTimeout = Serial_COM_Data.Sink_WriteTimeout;
+                        Sink.Handshake = (Handshake)Serial_COM_Data.Sink_Handshake;
+                        Sink.RtsEnable = Serial_COM_Data.Sink_RtsEnable;
+                        Sink.Open();
 
-                    testStart = true;
-                    Cancel_Test = false;
-                    Source.WriteLine(Input_setVolt + " " + "0");
-                    Source.WriteLine(Input_setCurr + " " + currentLimit.ToString());
-                    set_Source_Current_Display(currentLimit);
-                    Source.WriteLine(Input_outputON);
+                        testStart = true;
+                        Cancel_Test = false;
+                        Source.WriteLine(Input_setVolt + " " + "0");
+                        Source.WriteLine(Input_setCurr + " " + currentLimit.ToString());
+                        set_Source_Current_Display(currentLimit);
+                        Source.WriteLine(Input_outputON);
 
-                    if (allowSetVoltage == true)
-                    {
-                        Sink.WriteLine(Output_setVolt + " " + setVoltage.ToString());
-                        set_Sink_Voltage_Display(setVoltage);
-                    }
-                    Sink.WriteLine(Output_setCurr + " " + "0");
-                    Sink.WriteLine(Output_outputON);
-                    if (SingleSweep == true) 
-                    {
-                        stopVoltage = (startVoltage + 0.1);
-                    }
-                    for (double i = startVoltage; i <= stopVoltage; i = Math.Round((i + incrementVoltage), VoltageResolution))
-                    {
-                        //Set Source Voltage
-                        Source.WriteLine(Input_setVolt + " " + i);
-                        insert_Log("[Source] Set Input Voltage: " + i.ToString() + "V", Source_message);
-                        set_Source_Voltage_Display(i);
-                        Measurements.Add("Input Voltage (V), Input Current (A), Output Voltage (V), Output Current (A), Power Efficiency (%)");
-                        for (double j = startCurrent; j <= stopCurrent; j = Math.Round((j + incrementCurrent), CurrentResolution))
+                        if (allowSetVoltage == true)
                         {
-                            //Set Sink Current
-                            Sink.WriteLine(Output_setCurr + " " + j.ToString());
-                            Measurements.Add("[Sink] Set Current: " + j.ToString() + "A");
-                            insert_Log("[Sink] Set Output Load Current: " + j.ToString() + "A", Sink_message);
-                            set_Sink_Current_Display(j);
-                            for (int k = 0; k < MeasSamples; k++)
+                            Sink.WriteLine(Output_setVolt + " " + setVoltage.ToString());
+                            set_Sink_Voltage_Display(setVoltage);
+                        }
+                        Sink.WriteLine(Output_setCurr + " " + "0");
+                        Sink.WriteLine(Output_outputON);
+                        if (SingleSweep == true)
+                        {
+                            stopVoltage = (startVoltage + 0.1);
+                        }
+                        for (double i = startVoltage; i <= stopVoltage; i = Math.Round((i + incrementVoltage), VoltageResolution))
+                        {
+                            //Set Source Voltage
+                            Source.WriteLine(Input_setVolt + " " + i);
+                            insert_Log("[Source] Set Input Voltage: " + i.ToString() + "V", Source_message);
+                            set_Source_Voltage_Display(i);
+                            Measurements.Add("Input Voltage (V), Input Current (A), Output Voltage (V), Output Current (A), Power Efficiency (%)");
+                            for (double j = startCurrent; j <= stopCurrent; j = Math.Round((j + incrementCurrent), CurrentResolution))
                             {
-                                try
+                                //Set Sink Current
+                                Sink.WriteLine(Output_setCurr + " " + j.ToString());
+                                Measurements.Add("[Sink] Set Current: " + j.ToString() + "A");
+                                insert_Log("[Sink] Set Output Load Current: " + j.ToString() + "A", Sink_message);
+                                set_Sink_Current_Display(j);
+                                for (int k = 0; k < MeasSamples; k++)
                                 {
-                                    //Take Measurements
-                                    Source.WriteLine(Input_measVolt);
-                                    Source_MeasVolt = Math.Abs(Input_measureVoltage(Source.ReadLine()));
+                                    try
+                                    {
+                                        //Take Measurements
+                                        Source.WriteLine(Input_measVolt);
+                                        Source_MeasVolt = Math.Abs(Input_measureVoltage(Source.ReadLine()));
 
-                                    Source.WriteLine(Input_measCurr);
-                                    Source_MeasCurr = Math.Abs(Input_measureCurrent(Source.ReadLine()));
+                                        Source.WriteLine(Input_measCurr);
+                                        Source_MeasCurr = Math.Abs(Input_measureCurrent(Source.ReadLine()));
 
-                                    Sink.WriteLine(Output_measVolt);
-                                    Sink_MeasVolt = Math.Abs(Output_measureVoltage(Sink.ReadLine()));
+                                        Sink.WriteLine(Output_measVolt);
+                                        Sink_MeasVolt = Math.Abs(Output_measureVoltage(Sink.ReadLine()));
 
-                                    Sink.WriteLine(Output_measCurr);
-                                    Sink_MeasCurr = Math.Abs(Output_measureCurrent(Sink.ReadLine()));
-                                }
-                                catch (Exception)
-                                {
-                                    skipStep = true;
-                                    insert_Log("Cannot take voltage and/or current reading from power supply.", Warning_Code);
-                                    insert_Log("Nothing to worry about. If problem still persists then check Serial Connection.", Warning_Code);
-                                }
+                                        Sink.WriteLine(Output_measCurr);
+                                        Sink_MeasCurr = Math.Abs(Output_measureCurrent(Sink.ReadLine()));
+                                    }
+                                    catch (Exception)
+                                    {
+                                        skipStep = true;
+                                        insert_Log("Cannot take voltage and/or current reading from power supply.", Warning_Code);
+                                        insert_Log("Nothing to worry about. If problem still persists then check Serial Connection.", Warning_Code);
+                                    }
 
-                                if (skipStep == false)
-                                {
-                                    Source_Measure_Voltage.Add(Source_MeasVolt);
-                                    Source_Measure_Current.Add(Source_MeasCurr);
-                                    Sink_Measure_Voltage.Add(Sink_MeasVolt);
-                                    Sink_Measure_Current.Add(Sink_MeasCurr);
-                                    Measure_VC_Display();
+                                    if (skipStep == false)
+                                    {
+                                        Source_Measure_Voltage.Add(Source_MeasVolt);
+                                        Source_Measure_Current.Add(Source_MeasCurr);
+                                        Sink_Measure_Voltage.Add(Sink_MeasVolt);
+                                        Sink_Measure_Current.Add(Sink_MeasCurr);
+                                        Measure_VC_Display();
+                                    }
+                                    else
+                                    {
+                                        invalidSamples++;
+                                        skipStep = false;
+                                    }
+                                    if (Cancel_Test == true)
+                                    {
+                                        insert_Log("Tests Canceled.", Warning_Code);
+                                        break;
+                                    }
                                 }
-                                else 
-                                {
-                                    invalidSamples++;
-                                    skipStep = false;
-                                }
-                                if (Cancel_Test == true) 
+                                Test_Measurements(i, j);
+                                if (Cancel_Test == true)
                                 {
                                     insert_Log("Tests Canceled.", Warning_Code);
                                     break;
                                 }
                             }
-                            Test_Measurements(i, j);
+                            Output_Collected_Data(i);
+                            if ((folderCreated == true) & (saveMeasurements == true))
+                            {
+                                saveMeasurements_toFile(i.ToString());
+                            }
+                            if ((folderCreated == true) & (saveResults == true))
+                            {
+                                saveFinalResults_toFile(i.ToString());
+                            }
+                            Clear_Output_Collected_Data();
+                            Measurements.Clear();
+                            testCompleted++;
+                            Completed_Tests(testCompleted);
+                            if (SingleSweep == true)
+                            {
+                                stopVoltage = 0;
+                                break;
+                            }
                             if (Cancel_Test == true)
                             {
                                 insert_Log("Tests Canceled.", Warning_Code);
                                 break;
                             }
                         }
-                        Output_Collected_Data(i);
-                        if ((folderCreated == true) & (saveMeasurements == true))
-                        {
-                            saveMeasurements_toFile(i.ToString());
-                        }
-                        if ((folderCreated == true) & (saveResults == true))
-                        {
-                            saveFinalResults_toFile(i.ToString());
-                        }
-                        Clear_Output_Collected_Data();
-                        Measurements.Clear();
-                        testCompleted++;
-                        Completed_Tests(testCompleted);
-                        if (SingleSweep == true)
-                        {
-                            stopVoltage = 0;
-                            break;
-                        }
-                        if (Cancel_Test == true)
-                        {
-                            insert_Log("Tests Canceled.", Warning_Code);
-                            break;
-                        }
+                        Source.WriteLine(Input_setVolt + " " + "0");
+                        Source.WriteLine(Input_setCurr + " " + "0");
+                        Sink.WriteLine(Output_setVolt + " " + "0");
+                        Sink.WriteLine(Output_setCurr + " " + "0");
+                        Source.WriteLine(Input_outputOFF);
+                        Sink.WriteLine(Output_outputOFF);
+                        Source.Close();
+                        Sink.Close();
                     }
-                    Source.WriteLine(Input_setVolt + " " + "0");
-                    Source.WriteLine(Input_setCurr + " " + "0");
-                    Sink.WriteLine(Output_setVolt + " " + "0");
-                    Sink.WriteLine(Output_setCurr + " " + "0");
-                    Source.WriteLine(Input_outputOFF);
-                    Sink.WriteLine(Output_outputOFF);
-                    Source.Close();
-                    Sink.Close();
                 }
-            }
-            if (invalidSamples > 0) 
-            {
-                insert_Log("Invalid Samples Recieved: " + invalidSamples.ToString(), Warning_Code);
-                insert_Log("Nothing to worry about. Read the User Manual.", Warning_Code);
-            }
-            Tests_status(1);
-            Access_Control(true);
-            Display_Reset();
-            testStart = false;
-            Cancel_Test = false;
-            seconds = 0;
+                if (invalidSamples > 0)
+                {
+                    insert_Log("Invalid Samples Recieved: " + invalidSamples.ToString(), Warning_Code);
+                    insert_Log("Nothing to worry about. Read the User Manual.", Warning_Code);
+                }
+                Tests_status(1);
+                Access_Control(true);
+                Display_Reset();
+                testStart = false;
+                Cancel_Test = false;
+            });
         }
 
-        private void Test_Measurements(double setInputVoltage, double setOutputCurrent) 
+        private void Test_Measurements(double setInputVoltage, double setOutputCurrent)
         {
             int Size = Source_Measure_Voltage.Count();
 
-            for (int i = 0; i < Size; i++) 
+            for (int i = 0; i < Size; i++)
             {
                 Measurements.Add(Source_Measure_Voltage[i].ToString() + "," + Source_Measure_Current[i].ToString() + "," + Sink_Measure_Voltage[i].ToString() + "," + Sink_Measure_Current[i].ToString());
             }
@@ -1888,7 +1908,7 @@ namespace Power_Efficiency_663XB
             double Output_Power_Sample = Math.Round(Sink_Power, maxDigitsEfficiency);
             Output_Power.Add(Output_Power_Sample);
 
-            
+
             Sink_Voltage.Add(Si_Voltage);
 
             Sink_Current.Add(Si_Current);
@@ -1931,7 +1951,7 @@ namespace Power_Efficiency_663XB
                            + circuit_resistnace + "Ω", Average_message);
             if (AddTest_Table == true & DataTable != null)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     DataTable.addTest(testName, So_Voltage, So_Current, Si_Voltage, Si_Current, Input_Power_Sample, Output_Power_Sample, Test_Efficiency_Sample, power_loss, input_resistance, output_resistance, circuit_resistnace);
                 }));
@@ -1958,7 +1978,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (PowerEfficiency_OutputCurrent != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             PowerEfficiency_OutputCurrent.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Sink_Current, Test_Efficiency, Colour);
                             PowerEfficiency_OutputCurrent.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -1973,7 +1993,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (PowerEfficiency_OutputPower != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             PowerEfficiency_OutputPower.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Output_Power, Test_Efficiency, Colour);
                             PowerEfficiency_OutputPower.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -1988,7 +2008,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (OutputPower_InputPower != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             OutputPower_InputPower.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Input_Power, Output_Power, Colour);
                             OutputPower_InputPower.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2003,7 +2023,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (InputCurrent_InputVoltage != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             InputCurrent_InputVoltage.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Source_Voltage, Source_Current, Colour);
                             InputCurrent_InputVoltage.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2018,7 +2038,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (OutputCurrent_OutputVoltage != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             OutputCurrent_OutputVoltage.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Sink_Voltage, Sink_Current, Colour);
                             OutputCurrent_OutputVoltage.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2033,7 +2053,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (InputVoltage_InputCurrent != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             InputVoltage_InputCurrent.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Source_Current, Source_Voltage, Colour);
                             InputVoltage_InputCurrent.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2048,7 +2068,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (OutputVoltage_OutputCurrent != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             OutputVoltage_OutputCurrent.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Sink_Current, Sink_Voltage, Colour);
                             OutputVoltage_OutputCurrent.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2063,7 +2083,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (PowerLoss_OutputCurrent != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             PowerLoss_OutputCurrent.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Sink_Current, Test_power_Loss, Colour);
                             PowerLoss_OutputCurrent.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2078,7 +2098,7 @@ namespace Power_Efficiency_663XB
                 {
                     if (PowerLoss_OutputPower != null)
                     {
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             PowerLoss_OutputPower.insertGraph(("Vi: " + averageSourceVolt + "V, Vo: " + averageSinkVolt + "V, " + testName), Output_Power, Test_power_Loss, Colour);
                             PowerLoss_OutputPower.insert_Log(("Test Name: " + testName + " [Input] Source Voltage: " + averageSourceVolt + "V, [Output] Sink Voltage: " + averageSinkVolt + "V"), Colour);
@@ -2092,7 +2112,7 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private void Clear_Output_Collected_Data() 
+        private void Clear_Output_Collected_Data()
         {
             Source_Voltage.Clear();
             Source_Current.Clear();
@@ -2140,7 +2160,7 @@ namespace Power_Efficiency_663XB
             SinkResistance.Clear();
         }
 
-        private void saveMeasurements_toFile(string inputVoltage) 
+        private void saveMeasurements_toFile(string inputVoltage)
         {
             string textName = TestFolderPath + @"\" + "[Source] Input Voltage " + inputVoltage + "V" + ".txt";
             try
@@ -2154,23 +2174,23 @@ namespace Power_Efficiency_663XB
                 }
                 insert_Log("Saved Measurements to File: " + textName, Success_Code);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 insert_Log("Failed to save measurements to text file. Check File Directory.", Error_Code);
             }
         }
 
-        private void set_Source_Voltage_Display(double voltage) 
+        private void set_Source_Voltage_Display(double voltage)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 So_SetVolt_Val.Content = voltage.ToString();
             }));
         }
 
-        private void set_Source_Current_Display(double current) 
+        private void set_Source_Current_Display(double current)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 So_SetCurr_Val.Content = current.ToString();
             }));
@@ -2178,7 +2198,7 @@ namespace Power_Efficiency_663XB
 
         private void set_Sink_Voltage_Display(double voltage)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 Si_SetVolt_Val.Content = voltage.ToString();
             }));
@@ -2186,19 +2206,19 @@ namespace Power_Efficiency_663XB
 
         private void set_Sink_Current_Display(double current)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 Si_SetCurr_Val.Content = current.ToString();
             }));
         }
 
-        private void Measure_VC_Display() 
+        private void Measure_VC_Display()
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 So_Volt_Val.Content = Source_MeasVolt.ToString();
                 So_Curr_Val.Content = Source_MeasCurr.ToString();
-                So_Power_Val.Content = (Math.Round((Source_MeasVolt*Source_MeasCurr), VoltageResolution)).ToString();
+                So_Power_Val.Content = (Math.Round((Source_MeasVolt * Source_MeasCurr), VoltageResolution)).ToString();
 
                 Si_Volt_Val.Content = Sink_MeasVolt.ToString();
                 Si_Curr_Val.Content = Sink_MeasCurr.ToString();
@@ -2206,9 +2226,9 @@ namespace Power_Efficiency_663XB
             }));
         }
 
-        private void Display_Reset() 
+        private void Display_Reset()
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 So_Volt_Val.Content = "0";
                 So_Curr_Val.Content = "0";
@@ -2224,50 +2244,50 @@ namespace Power_Efficiency_663XB
             }));
         }
 
-        private void Tests_status(int Status) 
+        private void Tests_status(int Status)
         {
             if (Status == 0)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     status.Content = "Running";
                 }));
             }
             else if (Status == 1)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     status.Content = "Completed";
                 }));
             }
-            else if (Status == 2) 
+            else if (Status == 2)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     status.Content = "Not Running";
                 }));
             }
         }
 
-        private void Completed_Tests(int Number) 
+        private void Completed_Tests(int Number)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 testNum.Content = Number.ToString();
                 testProgress.Value = Number;
             }));
         }
 
-        private void Total_Tests() 
+        private void Total_Tests()
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
             {
                 testTotal.Content = total_Tests.ToString();
                 testProgress.Maximum = total_Tests;
             }));
         }
 
-        private double Input_measureVoltage(string temp) 
+        private double Input_measureVoltage(string temp)
         {
             if (Input_ScientificNotation == 1)
             {
@@ -2311,7 +2331,7 @@ namespace Power_Efficiency_663XB
                     return (0);
                 }
             }
-            else 
+            else
             {
                 skipStep = true;
                 insert_Log("Cannot measure Input Voltage. Check Serial Port Connection or bad command.", Error_Code);
@@ -2363,7 +2383,7 @@ namespace Power_Efficiency_663XB
                     return (0);
                 }
             }
-            else 
+            else
             {
                 skipStep = true;
                 insert_Log("Cannot measure Output Voltage. Check Serial Port Connection or bad command.", Error_Code);
@@ -2415,7 +2435,7 @@ namespace Power_Efficiency_663XB
                     return (0);
                 }
             }
-            else 
+            else
             {
                 skipStep = true;
                 insert_Log("Cannot measure Input Current. Check Serial Port Connection or bad command.", Error_Code);
@@ -2467,7 +2487,7 @@ namespace Power_Efficiency_663XB
                     return (0);
                 }
             }
-            else 
+            else
             {
                 skipStep = true;
                 insert_Log("Cannot measure Output Load Current. Check Serial Port Connection or bad command.", Error_Code);
@@ -2494,11 +2514,11 @@ namespace Power_Efficiency_663XB
             }
         }
 
-        private void Access_Control(bool Access) 
+        private void Access_Control(bool Access)
         {
             if (Access == false)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     SourceMenu.IsEnabled = false;
                     SinkMenu.IsEnabled = false;
@@ -2510,7 +2530,7 @@ namespace Power_Efficiency_663XB
             }
             else if (Access == true)
             {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     SourceMenu.IsEnabled = true;
                     SinkMenu.IsEnabled = true;
@@ -2536,17 +2556,26 @@ namespace Power_Efficiency_663XB
         {
             if (PowerEfficiency_OutputCurrent == null)
             {
-                PowerEfficiency_OutputCurrent = new Graph_Window();
-                PowerEfficiency_OutputCurrent.Closed += (a, b) => PowerEfficiency_OutputCurrent = null;
-                PowerEfficiency_OutputCurrent.setWindowTitle("Power Efficiency (%) vs [Sink] Output Load Current (A)");
-                PowerEfficiency_OutputCurrent.setXYLabels("Output Load Current (A)", "Power Efficiency (%)");
-                PowerEfficiency_OutputCurrent.setXYUnits("A", "%");
-                PowerEfficiency_OutputCurrent.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    PowerEfficiency_OutputCurrent = new Graph_Window();
+                    PowerEfficiency_OutputCurrent.Closed += (a, b) => { PowerEfficiency_OutputCurrent.Dispatcher.InvokeShutdown(); PowerEfficiency_OutputCurrent = null; this.Dispatcher.Invoke(() => { PE_OC.IsChecked = false; }); };
+                    PowerEfficiency_OutputCurrent.setWindowTitle("Power Efficiency (%) vs [Sink] Output Load Current (A)");
+                    PowerEfficiency_OutputCurrent.setXYLabels("Output Load Current (A)", "Power Efficiency (%)");
+                    PowerEfficiency_OutputCurrent.setXYUnits("A", "%");
+                    PowerEfficiency_OutputCurrent.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                PowerEfficiency_OutputCurrent.Show();
                 insert_Log("PowerEfficiency vs Output Current Window is already open.", Warning_Code);
+                PE_OC.IsChecked = true;
             }
         }
 
@@ -2554,17 +2583,26 @@ namespace Power_Efficiency_663XB
         {
             if (PowerEfficiency_OutputPower == null)
             {
-                PowerEfficiency_OutputPower = new Graph_Window();
-                PowerEfficiency_OutputPower.Closed += (a, b) => PowerEfficiency_OutputPower = null;
-                PowerEfficiency_OutputPower.setWindowTitle("Power Efficiency (%) vs [Sink] Output Load Power (W)");
-                PowerEfficiency_OutputPower.setXYLabels("Output Load Power (W)", "Power Efficiency (%)");
-                PowerEfficiency_OutputPower.setXYUnits("W", "%");
-                PowerEfficiency_OutputPower.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    PowerEfficiency_OutputPower = new Graph_Window();
+                    PowerEfficiency_OutputPower.Closed += (a, b) => { PowerEfficiency_OutputPower.Dispatcher.InvokeShutdown(); PowerEfficiency_OutputPower = null; this.Dispatcher.Invoke(() => { PE_OP.IsChecked = false; }); };
+                    PowerEfficiency_OutputPower.setWindowTitle("Power Efficiency (%) vs [Sink] Output Load Power (W)");
+                    PowerEfficiency_OutputPower.setXYLabels("Output Load Power (W)", "Power Efficiency (%)");
+                    PowerEfficiency_OutputPower.setXYUnits("W", "%");
+                    PowerEfficiency_OutputPower.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                PowerEfficiency_OutputPower.Show();
                 insert_Log("Power Efficiency vs Output Power Window is already open.", Warning_Code);
+                PE_OP.IsChecked = true;
             }
         }
 
@@ -2572,17 +2610,26 @@ namespace Power_Efficiency_663XB
         {
             if (OutputPower_InputPower == null)
             {
-                OutputPower_InputPower = new Graph_Window();
-                OutputPower_InputPower.Closed += (a, b) => OutputPower_InputPower = null;
-                OutputPower_InputPower.setWindowTitle("[Sink] Output Load Power (W) vs [Source] Input Power (W)");
-                OutputPower_InputPower.setXYLabels("Input Power (W)", "Output Load Power (W)");
-                OutputPower_InputPower.setXYUnits("W", "W");
-                OutputPower_InputPower.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    OutputPower_InputPower = new Graph_Window();
+                    OutputPower_InputPower.Closed += (a, b) => { OutputPower_InputPower.Dispatcher.InvokeShutdown(); OutputPower_InputPower = null; this.Dispatcher.Invoke(() => { IP_OP.IsChecked = false; }); };
+                    OutputPower_InputPower.setWindowTitle("[Sink] Output Load Power (W) vs [Source] Input Power (W)");
+                    OutputPower_InputPower.setXYLabels("Input Power (W)", "Output Load Power (W)");
+                    OutputPower_InputPower.setXYUnits("W", "W");
+                    OutputPower_InputPower.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                OutputPower_InputPower.Show();
                 insert_Log("Input Power vs Output Power Window is already open.", Warning_Code);
+                IP_OP.IsChecked = true;
             }
         }
 
@@ -2601,17 +2648,26 @@ namespace Power_Efficiency_663XB
         {
             if (InputCurrent_InputVoltage == null)
             {
-                InputCurrent_InputVoltage = new Graph_Window();
-                InputCurrent_InputVoltage.Closed += (a, b) => InputCurrent_InputVoltage = null;
-                InputCurrent_InputVoltage.setWindowTitle("[Source] Input Current (A) vs [Source] Input Voltage (V)");
-                InputCurrent_InputVoltage.setXYLabels("Input Voltage (V)", "Input Current (A)");
-                InputCurrent_InputVoltage.setXYUnits("V", "A");
-                InputCurrent_InputVoltage.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    InputCurrent_InputVoltage = new Graph_Window();
+                    InputCurrent_InputVoltage.Closed += (a, b) => { InputCurrent_InputVoltage.Dispatcher.InvokeShutdown(); InputCurrent_InputVoltage = null; this.Dispatcher.Invoke(() => { IC_IV.IsChecked = false; }); };
+                    InputCurrent_InputVoltage.setWindowTitle("[Source] Input Current (A) vs [Source] Input Voltage (V)");
+                    InputCurrent_InputVoltage.setXYLabels("Input Voltage (V)", "Input Current (A)");
+                    InputCurrent_InputVoltage.setXYUnits("V", "A");
+                    InputCurrent_InputVoltage.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                InputCurrent_InputVoltage.Show();
                 insert_Log("Input Current vs Input Voltage Window is already open.", Warning_Code);
+                IC_IV.IsChecked = true;
             }
         }
 
@@ -2619,17 +2675,26 @@ namespace Power_Efficiency_663XB
         {
             if (OutputCurrent_OutputVoltage == null)
             {
-                OutputCurrent_OutputVoltage = new Graph_Window();
-                OutputCurrent_OutputVoltage.Closed += (a, b) => OutputCurrent_OutputVoltage = null;
-                OutputCurrent_OutputVoltage.setWindowTitle("[Sink] Output Load Current (A) vs [Sink] Output Voltage (V)");
-                OutputCurrent_OutputVoltage.setXYLabels("Output Voltage (V)", "Output Load Current (A)");
-                OutputCurrent_OutputVoltage.setXYUnits("V", "A");
-                OutputCurrent_OutputVoltage.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    OutputCurrent_OutputVoltage = new Graph_Window();
+                    OutputCurrent_OutputVoltage.Closed += (a, b) => { OutputCurrent_OutputVoltage.Dispatcher.InvokeShutdown(); OutputCurrent_OutputVoltage = null; this.Dispatcher.Invoke(() => { OC_OV.IsChecked = false; }); };
+                    OutputCurrent_OutputVoltage.setWindowTitle("[Sink] Output Load Current (A) vs [Sink] Output Voltage (V)");
+                    OutputCurrent_OutputVoltage.setXYLabels("Output Voltage (V)", "Output Load Current (A)");
+                    OutputCurrent_OutputVoltage.setXYUnits("V", "A");
+                    OutputCurrent_OutputVoltage.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                OutputCurrent_OutputVoltage.Show();
                 insert_Log("Output Current vs Output Voltage Window is already open.", Warning_Code);
+                OC_OV.IsChecked = true;
             }
         }
 
@@ -2637,17 +2702,26 @@ namespace Power_Efficiency_663XB
         {
             if (InputVoltage_InputCurrent == null)
             {
-                InputVoltage_InputCurrent = new Graph_Window();
-                InputVoltage_InputCurrent.Closed += (a, b) => InputVoltage_InputCurrent = null;
-                InputVoltage_InputCurrent.setWindowTitle("[Source] Input Voltage (V) vs [Source] Input Current (A)");
-                InputVoltage_InputCurrent.setXYLabels("Input Current (A)", "Input Voltage (V)");
-                InputVoltage_InputCurrent.setXYUnits("A", "V");
-                InputVoltage_InputCurrent.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    InputVoltage_InputCurrent = new Graph_Window();
+                    InputVoltage_InputCurrent.Closed += (a, b) => { InputVoltage_InputCurrent.Dispatcher.InvokeShutdown(); InputVoltage_InputCurrent = null; this.Dispatcher.Invoke(() => { IV_IC.IsChecked = false; }); };
+                    InputVoltage_InputCurrent.setWindowTitle("[Source] Input Voltage (V) vs [Source] Input Current (A)");
+                    InputVoltage_InputCurrent.setXYLabels("Input Current (A)", "Input Voltage (V)");
+                    InputVoltage_InputCurrent.setXYUnits("A", "V");
+                    InputVoltage_InputCurrent.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                InputVoltage_InputCurrent.Show();
                 insert_Log("Input Current vs [Source] Input Voltage Window is already open.", Warning_Code);
+                IV_IC.IsChecked = true;
             }
         }
 
@@ -2655,17 +2729,26 @@ namespace Power_Efficiency_663XB
         {
             if (OutputVoltage_OutputCurrent == null)
             {
-                OutputVoltage_OutputCurrent = new Graph_Window();
-                OutputVoltage_OutputCurrent.Closed += (a, b) => OutputVoltage_OutputCurrent = null;
-                OutputVoltage_OutputCurrent.setWindowTitle("[Sink] Output Voltage (V) vs [Sink] Output Load Current (A)");
-                OutputVoltage_OutputCurrent.setXYLabels("Output Load Current (A)", "Output Voltage (V)");
-                OutputVoltage_OutputCurrent.setXYUnits("A", "V");
-                OutputVoltage_OutputCurrent.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    OutputVoltage_OutputCurrent = new Graph_Window();
+                    OutputVoltage_OutputCurrent.Closed += (a, b) => { OutputVoltage_OutputCurrent.Dispatcher.InvokeShutdown(); OutputVoltage_OutputCurrent = null; this.Dispatcher.Invoke(() => { OV_OC.IsChecked = false; }); };
+                    OutputVoltage_OutputCurrent.setWindowTitle("[Sink] Output Voltage (V) vs [Sink] Output Load Current (A)");
+                    OutputVoltage_OutputCurrent.setXYLabels("Output Load Current (A)", "Output Voltage (V)");
+                    OutputVoltage_OutputCurrent.setXYUnits("A", "V");
+                    OutputVoltage_OutputCurrent.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                OutputVoltage_OutputCurrent.Show();
                 insert_Log("Output Voltage vs Output Current Window is already open.", Warning_Code);
+                OV_OC.IsChecked = true;
             }
         }
 
@@ -2676,7 +2759,7 @@ namespace Power_Efficiency_663XB
                 AddTest_Graph = true;
                 insert_Log("Tests Data will be added to Graphs.", Message_Code);
             }
-            else 
+            else
             {
                 AddTest_Graph = false;
                 insert_Log("Tests Data will not be added to Graphs.", Warning_Code);
@@ -2688,12 +2771,13 @@ namespace Power_Efficiency_663XB
             if (DataTable == null)
             {
                 DataTable = new Table();
-                DataTable.Closed += (a, b) => DataTable = null;
+                DataTable.Closed += (a, b) => { DataTable = null; showTable.IsChecked = false; };
                 DataTable.Show();
+                showTable.IsChecked = true;
             }
             else
             {
-                DataTable.Show();
+                showTable.IsChecked = true;
                 insert_Log("Table is already open.", Warning_Code);
             }
         }
@@ -2707,14 +2791,14 @@ namespace Power_Efficiency_663XB
                 {
                     addtoTable.IsChecked = true;
                 }
-                else 
+                else
                 {
                     addtoTable.IsChecked = false;
                 }
             }
-            catch (Exception) 
+            catch (Exception)
             {
-                
+
             }
         }
 
@@ -2722,17 +2806,26 @@ namespace Power_Efficiency_663XB
         {
             if (PowerLoss_OutputCurrent == null)
             {
-                PowerLoss_OutputCurrent = new Graph_Window();
-                PowerLoss_OutputCurrent.Closed += (a, b) => PowerLoss_OutputCurrent = null;
-                PowerLoss_OutputCurrent.setWindowTitle("Power Loss (%) vs Output Load Current (A)");
-                PowerLoss_OutputCurrent.setXYLabels("Output Load Current (A)", "Power Loss (%)");
-                PowerLoss_OutputCurrent.setXYUnits("A", "%");
-                PowerLoss_OutputCurrent.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    PowerLoss_OutputCurrent = new Graph_Window();
+                    PowerLoss_OutputCurrent.Closed += (a, b) => { PowerLoss_OutputCurrent.Dispatcher.InvokeShutdown(); PowerLoss_OutputCurrent = null; this.Dispatcher.Invoke(() => { PL_OC.IsChecked = false; }); };
+                    PowerLoss_OutputCurrent.setWindowTitle("Power Loss (%) vs Output Load Current (A)");
+                    PowerLoss_OutputCurrent.setXYLabels("Output Load Current (A)", "Power Loss (%)");
+                    PowerLoss_OutputCurrent.setXYUnits("A", "%");
+                    PowerLoss_OutputCurrent.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                PowerLoss_OutputCurrent.Show();
                 insert_Log("Power Loss vs Output Current Window is already open.", Warning_Code);
+                PL_OC.IsChecked = true;
             }
         }
 
@@ -2740,17 +2833,26 @@ namespace Power_Efficiency_663XB
         {
             if (PowerLoss_OutputPower == null)
             {
-                PowerLoss_OutputPower = new Graph_Window();
-                PowerLoss_OutputPower.Closed += (a, b) => PowerLoss_OutputPower = null;
-                PowerLoss_OutputPower.setWindowTitle("Power Loss (%) vs Output Load Power (W)");
-                PowerLoss_OutputPower.setXYLabels("Output Load Power (W)", "Power Loss (%)");
-                PowerLoss_OutputPower.setXYUnits("W", "%");
-                PowerLoss_OutputPower.Show();
+                Thread Graph_Thread = new Thread(new ThreadStart(() =>
+                {
+                    PowerLoss_OutputPower = new Graph_Window();
+                    PowerLoss_OutputPower.Closed += (a, b) => { PowerLoss_OutputPower.Dispatcher.InvokeShutdown(); PowerLoss_OutputPower = null; this.Dispatcher.Invoke(() => { PL_OP.IsChecked = false; }); };
+                    PowerLoss_OutputPower.setWindowTitle("Power Loss (%) vs Output Load Power (W)");
+                    PowerLoss_OutputPower.setXYLabels("Output Load Power (W)", "Power Loss (%)");
+                    PowerLoss_OutputPower.setXYUnits("W", "%");
+                    PowerLoss_OutputPower.Show();
+                    Dispatcher.Run();
+                }));
+                Graph_Thread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
+                Graph_Thread.SetApartmentState(ApartmentState.STA);
+                Graph_Thread.IsBackground = true;
+                Graph_Thread.Start();
             }
             else
             {
-                PowerLoss_OutputPower.Show();
                 insert_Log("Power Loss vs Output Load Power Window is already open.", Warning_Code);
+                PL_OP.IsChecked = true;
             }
         }
 
@@ -2763,7 +2865,7 @@ namespace Power_Efficiency_663XB
                 SetV.IsEnabled = true;
                 sinkvoltUnit.IsEnabled = true;
             }
-            else 
+            else
             {
                 allowSetVoltage = false;
                 sinkvolttext.IsEnabled = false;
